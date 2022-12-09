@@ -1,39 +1,37 @@
 #include "character.h"
 
-class CHero : public CCharacter
+class Hero : public Character
 {
     
-    int nLevel;
-    int nExp;
-    std::vector<CAbility*> CAbilities; 
+    int _level;
+    int _exp;
+    std::vector<Ability*> _abilities; 
 
     public:
 
-    CHero(std::string sGname,
-          int nGhp,
-          int nGattack,
-          int nGprotection,
-          int nGlevel = 0,
-          int nGexp = 0)
+    Hero(std::string name,
+          int attack,
+          int protection,
+          int level = 0,
+          int exp = 0)
     {
-        sName = sGname;
-        nHP = nGhp;
-        nAttack = nGattack;
-        nProtection = nGprotection;
-        CAbilities = std::vector<CAbility*>();
-        nLevel = nGlevel;
-        nExp = nGexp;
+        _name = name;
+        _attack = attack;
+        _protection = protection;
+        _abilities = std::vector<Ability*>();
+        _level = level;
+        _exp = exp;
     }
 
-    int GetLevel() {return nLevel;}
-    int GetExp() {return nExp;}
-    std::vector<CAbility*> GetAbilities() {return CAbilities;}
+    int GetLevel() {return _level;}
+    int GetExp() {return _exp;}
+    std::vector<Ability*> GetAbilities() {return _abilities;}
 
-    void SetLevel(int nGlevel) {nLevel = nGlevel;}
-    void SetExp (int nGexp) {nExp = nGexp;}
-    void AddExp (int nGexp) {nExp += nGexp;}
+    void SetLevel(int nGlevel) {_level = nGlevel;}
+    void SetExp (int nGexp) {_exp = nGexp;}
+    void AddExp (int nGexp) {_exp += nGexp;}
 
-    void AddAbility(const CAbility& cGability);
+    void AddAbility(const Ability& Ab);
     
 
 };

@@ -1,36 +1,32 @@
 #include "ability.h"
 #include <iostream>
-class CCharacter
+#include <tuple>
+class Character
 {
     public:
-        std::string sName;
-        int nHP;
-        int nAttack;
-        int nProtection;
+        std::string _name;
+        int _attack;
+        int _protection;
         
-        CCharacter()
+        Character()
         {
-            sName = "";
-            nHP = 0;
-            nAttack = 0;
-            nProtection = 0;
+            _name = "";
+            _attack = 0;
+            _protection = 0;
         }
 
-        std::string GetName() {return sName;}
-        int GetHP() {return nHP;}
-        int GetAttack() {return nAttack;}
-        int GetProtection() {return nProtection;}
+        std::string GetName() {return _name;}
+        int GetAttack() {return _attack;}
+        int GetProtection() {return _protection;}
 
-        void SetName(std::string sGname) {sName = sGname;}
-        void SetHP(int nGhp) {nHP = nGhp;}
-        void SetAttack(int nGatt) {nAttack = nGatt;}
-        void SetProtection(int nGprot) {nProtection = nGprot;}
+        void SetName(std::string sGname) {_name = sGname;}
+        void SetAttack(int nGatt) {_attack = nGatt;}
+        void SetProtection(int nGprot) {_protection = nGprot;}
 
-        void AddHP(int nGhp) {nHP += nGhp;}
-        void AddAttack(int nGatt) {nAttack += nGatt;}
-        void AddProtection(int nGprot) {nProtection += nGprot;}
+        void AddAttack(int nGatt) {_attack += nGatt;}
+        void AddProtection(int nGprot) {_protection += nGprot;}
 
-        void Attack(CCharacter* cEnemy);
+        void Attack(Character* cEnemy);
         int rtsth(int a);
 
 };

@@ -1,23 +1,25 @@
 #include <vector>
 #include <string>
 
-class CAbility
+class Ability
 {
     public:
-        int a;
+        int _a;
 
-        CAbility()
+        Ability()
         {
-            a = 0;
+            _a = 0;
         }
 
-        CAbility(int Ga)
+        Ability(int a)
         {
-            a = Ga;
+            _a = a;
         }
 
-        CAbility(const CAbility& cAb)
+        Ability(const Ability& Ab)
         {
-            a = cAb.a;
+            _a = Ab._a;
         }
+
+        const int GetAbility() {return _a;}
 };

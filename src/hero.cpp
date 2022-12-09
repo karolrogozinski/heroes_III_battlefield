@@ -1,8 +1,8 @@
 #include "./headers/hero.h"
+#include "./headers/ability.h"
 
-void CHero::AddAbility(const CAbility& cGability)
+void Hero::AddAbility(const Ability& Ab)
 {
-    CAbility* cNewAbility = new CAbility(cGability.a); 
-    CAbilities.push_back(cNewAbility);
+    Ability* NewAbility = new Ability(Ab._a); 
+    _abilities.push_back(NewAbility);
 }
-

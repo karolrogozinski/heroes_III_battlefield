@@ -2,10 +2,12 @@
 
 class CHero : public CCharacter
 {
+    
+    int nLevel;
+    int nExp;
+    std::vector<CAbility*> CAbilities; 
+
     public:
-        int nLevel;
-        int nExp;
-        std::vector<CAbility> CAbilities; 
 
     CHero(std::string sGname,
           int nGhp,
@@ -18,11 +20,20 @@ class CHero : public CCharacter
         nHP = nGhp;
         nAttack = nGattack;
         nProtection = nGprotection;
-        CAbilities = {};
+        CAbilities = std::vector<CAbility*>();
         nLevel = nGlevel;
         nExp = nGexp;
     }
 
+    int GetLevel() {return nLevel;}
+    int GetExp() {return nExp;}
+    std::vector<CAbility*> GetAbilities() {return CAbilities;}
+
+    void SetLevel(int nGlevel) {nLevel = nGlevel;}
+    void SetExp (int nGexp) {nExp = nGexp;}
+    void AddExp (int nGexp) {nExp += nGexp;}
+
     void AddAbility(const CAbility& cGability);
-    void Attack(CHero* cEnemy);
+    
+
 };

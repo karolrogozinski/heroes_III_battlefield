@@ -1,5 +1,5 @@
 #include "../src/headers/hero.h"
-#include <iostream>
+
 
 int main()
 {
@@ -13,6 +13,9 @@ int main()
     cNico->Attack(cNiner);
 
     std::cout << cNiner->nHP << std::endl;
+    cNiner->AddAbility(cFury);
+
+    std::cout << cNiner->GetAbilities()[0]->a<< std::endl;
 
     delete cNico;
     delete cNiner;

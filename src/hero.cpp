@@ -2,6 +2,6 @@
 
 void Hero::AddAbility(const Ability& Ab)
 {
-    Ability* NewAbility = new Ability(Ab._a); 
+    APtr NewAbility = APtr(new Ability(Ab._a)); 
     _abilities.push_back(NewAbility);
 }

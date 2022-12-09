@@ -1,11 +1,14 @@
 #include "./headers/unit.h"
 
-void Unit::Attack(Unit* Enemy)
+int Unit::GenerateDamage()
 {
-    int damage = Enemy->GetProtection() - _attack;
-    if (damage < 0)
-    {
-        Enemy->SetHP(Enemy->GetHP() + damage);
-    }
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distr(_damage.first, _damage.second);
+    return distr(gen);
+}
 
-};
+void Unit::GetInjured(float damage)
+{
+    _hp -= damage;
+}

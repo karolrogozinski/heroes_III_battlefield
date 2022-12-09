@@ -1,6 +1,9 @@
 #include <vector>
 #include <string>
+#include <memory>
 #include "ability.h"
+
+typedef std::shared_ptr<Ability> APtr;
 
 class Hero
 {
@@ -9,7 +12,7 @@ class Hero
     int _protection;
     int _level;
     int _exp;
-    std::vector<Ability*> _abilities; 
+    std::vector<APtr> _abilities; 
 
     public:
         Hero(std::string name,
@@ -21,7 +24,7 @@ class Hero
             _name = name;
             _attack = attack;
             _protection = protection;
-            _abilities = std::vector<Ability*>();
+            _abilities = std::vector<APtr>();
             _level = level;
             _exp = exp;
         }
@@ -31,7 +34,7 @@ class Hero
         int GetProtection() {return _protection;}
         int GetLevel() {return _level;}
         int GetExp() {return _exp;}
-        std::vector<Ability*> GetAbilities() {return _abilities;}
+        std::vector<APtr> GetAbilities() {return _abilities;}
 
         void SetName(std::string sGname) {_name = sGname;}
         void SetAttack(int nGatt) {_attack = nGatt;}

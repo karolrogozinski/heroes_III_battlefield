@@ -1,5 +1,4 @@
 #include "./headers/hero.h"
-#include "./headers/ability.h"
 
 void Hero::AddAbility(const Ability& Ab)
 {

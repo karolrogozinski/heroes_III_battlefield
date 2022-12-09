@@ -1,6 +1,3 @@
-#include <vector>
-#include <string>
-
 class Ability
 {
     public:

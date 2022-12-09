@@ -1,24 +1,26 @@
+#include <iostream>
 #include "../src/headers/hero.h"
+#include "../src/headers/unit.h"
 
 
 int main()
 {
     // CCharacter cNoName = CCharacter();
-    CAbility cFury = CAbility(6);
-    std::string sName1 = "Nico";
-    std::string sName2 = "Niner";
-    CHero* cNico = new CHero(sName1, 20, 5, 2);
-    CHero* cNiner = new CHero(sName2, 10, 6, 3);
+    Ability Fury = Ability(6);
+    std::string name1 = "Nico";
+    std::string name2 = "Niner";
+    Unit* Nico = new Unit(name1, 20, 5, 2);
+    Unit* Niner = new Unit(name2, 10, 6, 3);
 
-    cNico->Attack(cNiner);
+    Nico->Attack(Niner);
 
-    std::cout << cNiner->nHP << std::endl;
-    cNiner->AddAbility(cFury);
+    std::cout << Niner->GetHP() << std::endl;
+    // Niner->AddAbility(Fury);
 
-    std::cout << cNiner->GetAbilities()[0]->a<< std::endl;
+    // std::cout << cNiner->GetAbilities()[0]->a<< std::endl;
 
-    delete cNico;
-    delete cNiner;
+    delete Nico;
+    delete Niner;
 
     return 0;
 }

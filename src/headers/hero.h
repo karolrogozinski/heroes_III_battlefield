@@ -2,7 +2,6 @@
 #include <string>
 #include <memory>
 #include "ability.h"
-
 typedef std::shared_ptr<Ability> APtr;
 
 class Hero
@@ -41,8 +40,8 @@ class Hero
         void SetProtection(int nGprot) {_protection = nGprot;}
         void SetLevel(int nGlevel) {_level = nGlevel;}
         void SetExp (int nGexp) {_exp = nGexp;}
-        void AddExp (int nGexp) {_exp += nGexp;}
 
+        void AddExp (int nGexp) {_exp += nGexp;}
         void AddAttack(int nGatt) {_attack += nGatt;}
         void AddProtection(int nGprot) {_protection += nGprot;}
         void AddAbility(const Ability& Ab);

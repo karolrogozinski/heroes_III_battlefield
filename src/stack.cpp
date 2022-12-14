@@ -18,6 +18,11 @@ void Stack::AddUnit(UPtr unit)
     }
 }
 
+void Stack::AddUnit(Unit* unit)
+{
+    AddUnit(UPtr(unit));
+}
+
 void Stack::BeAttacked(float damage)
 {
     int toRemove = 0;

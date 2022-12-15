@@ -1,8 +1,8 @@
 #include "headers/controller.h"
 
-void SettingsController::UpdateSettings(const std::string section,
-                                        const std::string field,
-                                        float value)
+void SettingsController::UpdateSettings(const std::string& section,
+                                        const std::string& field,
+                                        std::string value)
 {
     settingsMap::iterator it = _settings.find(section);
     if (it == _settings.end())
@@ -39,9 +39,9 @@ void SettingsController::UpdateSettings(const std::string section,
     }
 }
 
-bool SettingsController::GetSetting(const std::string section,
-                                    const std::string field,
-                                    float& settingValue)
+bool SettingsController::GetSetting(const std::string& section,
+                                    const std::string& field,
+                                    std::string& settingValue)
 {
     settingsMap::iterator it = _settings.find(section);
     if (it == _settings.end())
@@ -82,19 +82,19 @@ void SettingsController::ReadConfig()
             if (row.substr(0, 1) == "[" && row.substr(row.size()-1) == "]")
             {
                 sectionName = row.substr(1, row.size() - 2);
+                // std::cout << sectionName << std::endl;
                 _settings.insert({sectionName, sectionVec()});
                 continue;
             }
             std::size_t pos = row.find("=");
             if (pos != std::string::npos)
             {
-                // std::cout << std::stof(row.substr(pos + 1)) << std::endl;
+                // std::cout << row.substr(pos + 1) << std::endl;
                 _settings[sectionName].push_back(
-                    std::make_pair(row.substr(0, pos),
-                                   std::stof(row.substr(pos + 1))));
+                    std::make_pair(row.substr(0, pos), row.substr(pos + 1)));
             }
 
-        Conf.close();
         }
+        Conf.close();
     }
 }

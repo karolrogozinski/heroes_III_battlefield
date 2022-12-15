@@ -1,6 +1,20 @@
 #include "headers/controller.h"
+#include <pybind11/pybind11.h>
+namespace py = pybind11;
 
-void SettingsController::UpdateSettings(const std::string& section,
+PYBIND11_MODULE(controller, m)
+{
+    py::class_<Controller>(m, "Controller")
+        .def(py::init<>())
+        .def(py::init<std::string>())
+        .def("GetSettings", &Controller::GetSettings)
+        .def("GetPath", &Controller::GetPath)
+        .def("SetPath", &Controller::SetPath)
+        .def("UpdateSettings", &Controller::UpdateSettings)
+        .def("GetSetting", &Controller::GetSetting);
+}
+
+void Controller::UpdateSettings(const std::string& section,
                                         const std::string& field,
                                         std::string value)
 {
@@ -39,35 +53,33 @@ void SettingsController::UpdateSettings(const std::string& section,
     }
 }
 
-bool SettingsController::GetSetting(const std::string& section,
-                                    const std::string& field,
-                                    std::string& settingValue)
+std::string Controller::GetSetting(const std::string& section,
+                                    const std::string& field)
 {
     settingsMap::iterator it = _settings.find(section);
     if (it == _settings.end())
     {
-        return false;
+        return "";
     }
     else
     {
         sectionVec sectionData = it->second;
-        if (!sectionData.size()) return false;
+        if (!sectionData.size()) return "";
         else
         {
             for (rowPair row: sectionData)
             {
                 if (row.first == field)
                 {
-                    settingValue = row.second;
-                    return true;
+                    return row.second;
                 }
             }
-            return false;
+            return "";
         }
     }
 }
 
-void SettingsController::ReadConfig()
+void Controller::ReadConfig()
 {
     std::ifstream Conf(_relPath);
     std::string row;

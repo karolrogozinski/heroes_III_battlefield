@@ -9,15 +9,16 @@
 typedef std::pair<std::string, std::string> rowPair;
 typedef std::vector<rowPair> sectionVec;
 typedef std::map<std::string, sectionVec> settingsMap;
-//               MUSIC                              VOLUME       60
 
-class SettingsController
+class Controller
 {
     settingsMap _settings;
     std::string _relPath = "../conf.ini";
 
+    void ReadConfig();
+
     public:
-        SettingsController()
+        Controller()
         {
             _settings = settingsMap();
             std::cout << "readconfig" << std::endl;
@@ -30,7 +31,7 @@ class SettingsController
             std::cout << "done" << std::endl;
         }
 
-        SettingsController(std::string relPath)
+        Controller(std::string relPath)
         {
             _relPath = relPath;
             _settings = settingsMap();
@@ -42,8 +43,6 @@ class SettingsController
         void SetPath(std::string relPath) {_relPath = relPath;}
 
         void UpdateSettings(const std::string& section,const std::string& field, std::string value);
-        bool GetSetting(const std::string& section, const std::string& field, std::string& settingValue);
-        void ReadConfig();
-
-
+        std::string GetSetting(const std::string& section, const std::string& field);
+        
 };

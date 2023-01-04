@@ -71,3 +71,12 @@ void Stack::Attack(Stack& stack)
 
     stack.BeAttacked(sumDamage);
 }
+
+bool operator== (const Stack& lhs, const Stack& rhs)
+{
+    return lhs.mID == rhs.mID &&
+        lhs.mUnits == rhs.mUnits &&
+        lhs.mSize == rhs.mSize &&
+        lhs.mProtection == rhs.mProtection &&
+        lhs.mAttack == rhs.mAttack;
+}

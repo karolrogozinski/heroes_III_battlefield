@@ -6,6 +6,7 @@ typedef std::shared_ptr<Unit> UPtr;
 
 class Stack
 {
+    int mID;
     std::vector<UPtr> mUnits;
     int mSize;
     int mProtection;
@@ -14,10 +15,22 @@ class Stack
     public:
         Stack()
         {
+            mID = 0;
             mUnits = {};
             mSize = 0;
             mProtection = 0;
             mAttack = 0;
+        }
+
+        Stack(int id)
+        {
+            Stack();
+            mID = id;
+        }
+
+        ~Stack()
+        {
+            //TODO
         }
 
         std::vector<UPtr> getUnits() {return mUnits;}
@@ -31,4 +44,6 @@ class Stack
 
         void BeAttacked(float damage);
         void Attack(Stack& stack);
+
+        friend bool operator== (const Stack& lhs, const Stack& rhs);
 };

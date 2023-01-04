@@ -18,3 +18,8 @@ HNPtr HexNode::GetNeigh(int i)
 {
     return mOrdNeighs[i];
 }
+
+bool HexNode::CanStep()
+{
+    return mStack->getID() == -1 ? false : true;
+}

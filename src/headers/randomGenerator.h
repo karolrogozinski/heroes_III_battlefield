@@ -2,21 +2,32 @@
 #include <string>
 #include <random>
 
-class RandomGenerator
+struct RandomGenerator
 {
-    std::mt19937 gen;
+    private:
+        static std::shared_ptr<RandomGenerator> mInstance;
+        std::mt19937 gen;
 
-    public:
         RandomGenerator()
         {
             std::random_device rd;
             std::mt19937 gen(rd());
         }
 
-        int GetIntInRange(int first, int second)
+
+    public:
+    int GetIntInRange(int first, int second)
+    {
+        std::uniform_int_distribution<> distr(first, second);
+        return distr(gen);
+    }
+
+    static RandomGenerator getInstance()
+    {
+        if (mInstance == nullptr)
         {
-            std::uniform_int_distribution<> distr(first, second);
-            return distr(gen);
+            mInstance = std::shared_ptr<RandomGenerator>(new RandomGenerator());
         }
+    }
 
 };

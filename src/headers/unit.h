@@ -54,6 +54,6 @@ class Unit
         void AddDamage(int dam) {mDamage.first += dam; mDamage.second += dam;}
 
         void GetInjured(float damage);
-        int GenerateDamage(RandomGenerator& gen);
+        int GenerateDamage();
 
 };

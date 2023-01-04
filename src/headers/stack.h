@@ -37,6 +37,7 @@ class Stack
         int getSize() {return mSize;}
         int getProtection() {return mProtection;}
         int getAttack() {return mAttack;}
+        int getID() {return mID;}
 
         void AddUnit();
         void AddUnit(UPtr unit);

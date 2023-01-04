@@ -8,21 +8,26 @@ class HexNode
 {
     std::vector<HNPtr> mOrdNeighs; // starting from right up corner, down
     std::shared_ptr<Stack> mStack;
-    const unsigned int mSize = 6;
+    bool mStepable;
+    const unsigned int mNeighNum = 6;
 
     public:
         HexNode()
         {
-            for (unsigned int _ = 0; _ < mSize; ++_)
+            for (unsigned int _ = 0; _ < mNeighNum; ++_)
             {
                 mOrdNeighs.push_back(HNPtr());
             }
+            mStack = std::shared_ptr<Stack>();
+            mStepable = true;
+
         }
 
         HexNode(HexNode& node)
         {
             mOrdNeighs = node.mOrdNeighs;
             mStack = node.mStack;
+            mStepable = node.CanStep();
         }
 
         ~HexNode()
@@ -43,5 +48,6 @@ class HexNode
         friend bool operator== (const HexNode& lhs, const HexNode& rhs);
         bool CheckIfNeigh(HexNode& node);
         HNPtr GetNeigh(int i);
+        bool CanStep();
 
 };

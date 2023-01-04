@@ -9,18 +9,18 @@ PYBIND11_MODULE(hero, m)
 {
     py::class_<Hero>(m, "Hero")
         .def(py::init<std::string, int, int, int, int>(), "name"_a, "attack"_a, "protection"_a, "level"_a = 0, "exp"_a = 0)
-        .def("GetName", &Hero::GetName)
-        .def("GetAttack", &Hero::GetAttack)
-        .def("GetProtection", &Hero::GetProtection)
-        .def("GetLevel", &Hero::GetLevel)
-        .def("GetExp", &Hero::GetExp)
-        .def("GetAbilities", &Hero::GetAbilities)
+        .def("getName", &Hero::getName)
+        .def("getAttack", &Hero::getAttack)
+        .def("getProtection", &Hero::getProtection)
+        .def("getLevel", &Hero::getLevel)
+        .def("getExp", &Hero::getExp)
+        .def("getAbilities", &Hero::getAbilities)
 
-        .def("SetName", &Hero::SetName)
-        .def("SetAttack", &Hero::SetAttack)
-        .def("SetProtection", &Hero::SetProtection)
-        .def("SetLevel", &Hero::SetLevel)
-        .def("SetExp", &Hero::SetExp)
+        .def("setName", &Hero::setName)
+        .def("setAttack", &Hero::setAttack)
+        .def("setProtection", &Hero::setProtection)
+        .def("setLevel", &Hero::setLevel)
+        .def("setExp", &Hero::setExp)
 
         .def("AddExp", &Hero::AddExp)
         .def("AddAttack", &Hero::AddAttack)
@@ -31,6 +31,6 @@ PYBIND11_MODULE(hero, m)
 
 void Hero::AddAbility(const Ability& Ab)
 {
-    APtr NewAbility = APtr(new Ability(Ab._a)); 
-    _abilities.push_back(NewAbility);
+    APtr NewAbility = APtr(new Ability(Ab.mValue)); 
+    mAbilities.push_back(NewAbility);
 }

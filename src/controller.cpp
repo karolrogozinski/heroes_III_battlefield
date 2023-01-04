@@ -1,4 +1,4 @@
-#include "headers/controller.h"
+#include "./headers/controller.h"
 #include <pybind11/pybind11.h>
 namespace py = pybind11;
 
@@ -7,9 +7,9 @@ PYBIND11_MODULE(controller, m)
     py::class_<Controller>(m, "Controller")
         .def(py::init<>())
         .def(py::init<std::string>())
-        .def("GetSettings", &Controller::GetSettings)
-        .def("GetPath", &Controller::GetPath)
-        .def("SetPath", &Controller::SetPath)
+        .def("getSettings", &Controller::getSettings)
+        .def("getPath", &Controller::getPath)
+        .def("setPath", &Controller::setPath)
         .def("UpdateSettings", &Controller::UpdateSettings)
         .def("GetSetting", &Controller::GetSetting);
 }
@@ -18,13 +18,13 @@ void Controller::UpdateSettings(const std::string& section,
                                         const std::string& field,
                                         std::string value)
 {
-    settingsMap::iterator it = _settings.find(section);
-    if (it == _settings.end())
+    settingsMap::iterator it = mSettings.find(section);
+    if (it == mSettings.end())
     {
         sectionVec sectionData = sectionVec();
         rowPair rowData = rowPair(field, value); 
         sectionData.push_back(rowData);
-        _settings.insert(std::make_pair(section, sectionData));
+        mSettings.insert(std::make_pair(section, sectionData));
     }
     else
     {
@@ -56,8 +56,8 @@ void Controller::UpdateSettings(const std::string& section,
 std::string Controller::GetSetting(const std::string& section,
                                     const std::string& field)
 {
-    settingsMap::iterator it = _settings.find(section);
-    if (it == _settings.end())
+    settingsMap::iterator it = mSettings.find(section);
+    if (it == mSettings.end())
     {
         return "";
     }
@@ -81,7 +81,7 @@ std::string Controller::GetSetting(const std::string& section,
 
 void Controller::ReadConfig()
 {
-    std::ifstream Conf(_relPath);
+    std::ifstream Conf(mRelPath);
     std::string row;
     std::string sectionName;
     std::vector<std::string> lines = std::vector<std::string>();
@@ -95,14 +95,14 @@ void Controller::ReadConfig()
             {
                 sectionName = row.substr(1, row.size() - 2);
                 // std::cout << sectionName << std::endl;
-                _settings.insert({sectionName, sectionVec()});
+                mSettings.insert({sectionName, sectionVec()});
                 continue;
             }
             std::size_t pos = row.find("=");
             if (pos != std::string::npos)
             {
                 // std::cout << row.substr(pos + 1) << std::endl;
-                _settings[sectionName].push_back(
+                mSettings[sectionName].push_back(
                     std::make_pair(row.substr(0, pos), row.substr(pos + 1)));
             }
 

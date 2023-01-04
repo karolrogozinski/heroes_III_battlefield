@@ -3,18 +3,18 @@
 
 void Stack::AddUnit()
 {
-    _units.push_back(UPtr(new Unit()));
-    _size += 1;
+    mUnits.push_back(UPtr(new Unit()));
+    mSize += 1;
 }
 
 void Stack::AddUnit(UPtr unit)
 {
-    _units.push_back(unit);
-    _size += 1;
-    if (_protection == 0)
+    mUnits.push_back(unit);
+    mSize += 1;
+    if (mProtection == 0)
     {
-    _protection = unit->GetProtection();
-    _attack = unit->GetAttack();
+    mProtection = unit->getProtection();
+    mAttack = unit->getAttack();
     }
 }
 
@@ -27,14 +27,14 @@ void Stack::BeAttacked(float damage)
 {
     int toRemove = 0;
     float tempDif;
-    for (UPtr unit: _units)
+    for (UPtr unit: mUnits)
     {
-        if (damage >= unit->GetHP())
+        if (damage >= unit->getHP())
         {
-            damage -= unit->GetHP();
+            damage -= unit->getHP();
             toRemove += 1;
         }
-        else if (damage < unit->GetHP() && damage > 0)
+        else if (damage < unit->getHP() && damage > 0)
         {
             unit->GetInjured(damage);
             damage = 0;
@@ -44,15 +44,15 @@ void Stack::BeAttacked(float damage)
 
     for (int i = 0; i < toRemove; ++i)
     {
-        _units.erase(_units.begin());
+        mUnits.erase(mUnits.begin());
     }
 }
 
 
 void Stack::Attack(Stack& stack)
 {
-    std::vector<UPtr> enemyUnits = stack.GetUnits();
-    int protDif = _attack - stack.GetProtection();
+    std::vector<UPtr> enemyUnits = stack.getUnits();
+    int protDif = mAttack - stack.getProtection();
     if (protDif < 0)
     {
         protDif = 0;
@@ -63,7 +63,7 @@ void Stack::Attack(Stack& stack)
         percAddition = 3.;
     }
     float sumDamage = 0.;
-    for (UPtr unit: _units)
+    for (UPtr unit: mUnits)
     {
         sumDamage += unit->GenerateDamage();
     }

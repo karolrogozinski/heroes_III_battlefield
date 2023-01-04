@@ -2,16 +2,17 @@
 #include <string>
 #include <memory>
 #include "ability.h"
+
 typedef std::shared_ptr<Ability> APtr;
 
 class Hero
 {
-    std::string _name;
-    int _attack;
-    int _protection;
-    int _level;
-    int _exp;
-    std::vector<APtr> _abilities; 
+    std::string mName;
+    int mAttack;
+    int mProtection;
+    int mLevel;
+    int mExp;
+    std::vector<APtr> mAbilities; 
 
     public:
         Hero(std::string name,
@@ -20,30 +21,30 @@ class Hero
             int level = 0,
             int exp = 0)
         {
-            _name = name;
-            _attack = attack;
-            _protection = protection;
-            _abilities = std::vector<APtr>();
-            _level = level;
-            _exp = exp;
+            mName = name;
+            mAttack = attack;
+            mProtection = protection;
+            mAbilities = std::vector<APtr>();
+            mLevel = level;
+            mExp = exp;
         }
 
-        std::string GetName() {return _name;}
-        int GetAttack() {return _attack;}
-        int GetProtection() {return _protection;}
-        int GetLevel() {return _level;}
-        int GetExp() {return _exp;}
-        std::vector<APtr> GetAbilities() {return _abilities;}
+        std::string getName() {return mName;}
+        int getAttack() {return mAttack;}
+        int getProtection() {return mProtection;}
+        int getLevel() {return mLevel;}
+        int getExp() {return mExp;}
+        std::vector<APtr> getAbilities() {return mAbilities;}
 
-        void SetName(std::string sGname) {_name = sGname;}
-        void SetAttack(int nGatt) {_attack = nGatt;}
-        void SetProtection(int nGprot) {_protection = nGprot;}
-        void SetLevel(int nGlevel) {_level = nGlevel;}
-        void SetExp (int nGexp) {_exp = nGexp;}
+        void setName(std::string sGname) {mName = sGname;}
+        void setAttack(int nGatt) {mAttack = nGatt;}
+        void setProtection(int nGprot) {mProtection = nGprot;}
+        void setLevel(int nGlevel) {mLevel = nGlevel;}
+        void setExp (int nGexp) {mExp = nGexp;}
 
-        void AddExp (int nGexp) {_exp += nGexp;}
-        void AddAttack(int nGatt) {_attack += nGatt;}
-        void AddProtection(int nGprot) {_protection += nGprot;}
+        void AddExp (int nGexp) {mExp += nGexp;}
+        void AddAttack(int nGatt) {mAttack += nGatt;}
+        void AddProtection(int nGprot) {mProtection += nGprot;}
         void AddAbility(const Ability& Ab);
     
 

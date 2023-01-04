@@ -6,24 +6,24 @@ typedef std::shared_ptr<Unit> UPtr;
 
 class Stack
 {
-    std::vector<UPtr> _units;
-    int _size;
-    int _protection;
-    int _attack;
+    std::vector<UPtr> mUnits;
+    int mSize;
+    int mProtection;
+    int mAttack;
 
     public:
         Stack()
         {
-            _units = {};
-            _size = 0;
-            _protection = 0;
-            _attack = 0;
+            mUnits = {};
+            mSize = 0;
+            mProtection = 0;
+            mAttack = 0;
         }
 
-        std::vector<UPtr> GetUnits() {return _units;}
-        int GetSize() {return _size;}
-        int GetProtection() {return _protection;}
-        int GetAttack() {return _attack;}
+        std::vector<UPtr> getUnits() {return mUnits;}
+        int getSize() {return mSize;}
+        int getProtection() {return mProtection;}
+        int getAttack() {return mAttack;}
 
         void AddUnit();
         void AddUnit(UPtr unit);

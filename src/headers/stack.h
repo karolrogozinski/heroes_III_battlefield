@@ -28,6 +28,15 @@ class Stack
             mID = id;
         }
 
+        Stack(const Stack& stack)
+        {
+            mID = stack.mID;
+            mUnits = stack.mUnits;
+            mSize = stack.mSize;
+            mProtection = stack.mProtection;
+            mAttack = stack.mAttack;
+        }
+
         ~Stack()
         {
             //TODO

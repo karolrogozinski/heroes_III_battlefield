@@ -49,7 +49,7 @@ void Stack::BeAttacked(float damage)
 }
 
 
-void Stack::Attack(Stack& stack)
+bool Stack::Attack(Stack& stack)
 {
     std::vector<UPtr> enemyUnits = stack.getUnits();
     int protDif = mAttack - stack.getProtection();
@@ -70,6 +70,42 @@ void Stack::Attack(Stack& stack)
     sumDamage += percAddition * sumDamage;
 
     stack.BeAttacked(sumDamage);
+
+    if (stack.getUnits().size() == 0)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool Stack::Attack(std::shared_ptr<Stack> stack)
+{
+    const float multiplier = 0.05;
+    std::vector<UPtr> enemyUnits = stack->getUnits();
+    int protDif = mAttack - stack->getProtection();
+    if (protDif < 0)
+    {
+        protDif = 0;
+    }
+    float percAddition = protDif * multiplier;
+    if (percAddition > 3.)
+    {
+        percAddition = 3.;
+    }
+    float sumDamage = 0.;
+    for (UPtr unit: mUnits)
+    {
+        sumDamage += unit->GenerateDamage();
+    }
+    sumDamage += percAddition * sumDamage;
+
+    stack->BeAttacked(sumDamage);
+
+    if (stack->getUnits().size() == 0)
+    {
+        return true;
+    }
+    return false;
 }
 
 bool operator== (const Stack& lhs, const Stack& rhs)

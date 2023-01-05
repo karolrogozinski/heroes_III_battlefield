@@ -27,16 +27,24 @@ class Battlefield
 
         HexNode& GetNode(int x, int y)
         {
-            return mMap[x][y];
+            return mMap[y][x];
         }
 
         std::shared_ptr<Stack> GetStackPtr(int x, int y)
         {
-            return mMap[x][y].getStack();
+            return mMap[y][x].getStack();
         }
 
         void InsertStack(int x, int y, Stack& stack)
         {
-            mMap[x][y].setStack(stack);
+            mMap[y][x].setStack(stack);
         }
+
+        void InsertStack(int x, int y, std::shared_ptr<Stack> stack)
+        {
+            mMap[y][x].setStack(stack);
+        }
+
+        bool MoveStack(int x1, int y1, int x2, int y2);
+        bool Attack(int x1, int y1, int x2, int y2);
 };

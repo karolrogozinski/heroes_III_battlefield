@@ -42,7 +42,7 @@ class Stack
             //TODO
         }
 
-        std::vector<UPtr> getUnits() {return mUnits;}
+        std::vector<UPtr>& getUnits() {return mUnits;}
         int getSize() {return mSize;}
         int getProtection() {return mProtection;}
         int getAttack() {return mAttack;}
@@ -53,7 +53,8 @@ class Stack
         void AddUnit(Unit* unit);
 
         void BeAttacked(float damage);
-        void Attack(Stack& stack);
+        bool Attack(Stack& stack);
+        bool Attack(std::shared_ptr<Stack> stackPtr);
 
         friend bool operator== (const Stack& lhs, const Stack& rhs);
 };

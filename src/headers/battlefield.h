@@ -24,7 +24,6 @@ class Battlefield
                        cordsT finalCords,
                        bool isPlayer);
         bool Attack(cordsT itsCords, cordsT enemyCords, bool isPlayer);
-        std::vector<std::shared_ptr<Stack>> GetForces(bool isPlayer);
 
         std::vector<cordsT> GetAllOccupiedCords();
         

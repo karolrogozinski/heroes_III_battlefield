@@ -1,33 +1,17 @@
 #include "./headers/battlefield.h"
+#include <pybind11/pybind11.h>
+namespace py = pybind11;
 
-// bool Battlefield::MoveStack(int x1, int y1, int x2, int y2)
-// {
-//     if (!mMap[y1][x1].stepable())
-//     {
-//         return false;
-//     }
-//     std::shared_ptr<Stack> stack = mMap[y1][x1].RetrieveStack();
-//     InsertStack(x2, y2, stack);
-//     return true;
-// }
-
-// bool Battlefield::Attack(int x1, int y1, int x2, int y2)
-// {
-//     bool result = mMap[y1][x1].getStack()->Attack(mMap[y2][x2].getStack());
-//     return result;
-// };
-
-// std::vector<std::shared_ptr<Stack>> Battlefield::GetForces(bool isPlayer)
-// {
-//     std::vector<std::shared_ptr<Stack>> forces = std::vector<std::shared_ptr<Stack>>();
-//     for (int _ = 0; _ < mSize; ++_)
-//     {
-//         for (int s = 0; s < mSize; ++s)
-//         {
-//             if (mMap[_][s].getStack()
-//         }
-//     }
-// }
+PYBIND11_MODULE(battlefield, m)
+{
+    py::class_<Battlefield>(m, "Battlefield")
+        .def(py::init<HPtr, HPtr>())
+        .def(py::init<Hero&, Hero&>())
+        .def("MoveStack", &Battlefield::MoveStack)
+        .def("Attack", &Battlefield::Attack)
+        .def("GetAllOccupiedCords", &Battlefield::GetAllOccupiedCords)
+        .def("GetPossibleMoveCords", &Battlefield::GetPossibleMoveCords);
+}
 
 void Battlefield::generateDefUnitsCords(HPtr Hero, bool leftSide)
 {

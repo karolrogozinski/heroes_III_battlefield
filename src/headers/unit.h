@@ -1,52 +1,57 @@
 #include <utility>
 #include <string>
 #include <random>
+#include "randomGenerator.h"
+
+typedef std::unique_ptr<RandomGenerator> GPtr;
+
 class Unit
 {
-    std::string _name;
-    int _attack;
-    int _protection;
-    std::pair<int, int> _damage;
-    float _hp;
+    std::string mName;
+    int mAttack;
+    int mProtection;
+    std::pair<int, int> mDamage;
+    float mHP;
+
 
     public:
         
         Unit()
         {
-            _name = "";
-            _hp = 0;
-            _attack = 0;
-            _protection = 0;
-            _damage = {0, 0};
+            mName = "";
+            mHP = 0;
+            mAttack = 0;
+            mProtection = 0;
+            mDamage = {0, 0};
         }
 
         Unit(std::string name,
              float hp, int attack, int prot,
              std::pair<int, int> damage = {})
         {
-            _name = name;
-            _hp = hp;
-            _attack = attack;
-            _protection = prot;
-            _damage = damage;
+            mName = name;
+            mHP = hp;
+            mAttack = attack;
+            mProtection = prot;
+            mDamage = damage;
         }
 
-        std::string GetName() {return _name;}
-        float GetHP() {return _hp;}
-        int GetAttack() {return _attack;}
-        int GetProtection() {return _protection;}
-        std::pair<int, int> GetDamage() {return _damage;}
+        std::string getName() {return mName;}
+        float getHP() {return mHP;}
+        int getAttack() {return mAttack;}
+        int getProtection() {return mProtection;}
+        std::pair<int, int> getDamage() {return mDamage;}
 
-        void SetName(std::string sGname) {_name = sGname;}
-        void SetHP(float hp) {_hp = hp;}
-        void SetAttack(int att) {_attack = att;}
-        void SetProtection(int prot) {_protection = prot;}
-        void SetDamage(std::pair<int, int> damage) {_damage = damage;}
+        void setName(std::string sGname) {mName = sGname;}
+        void setHP(float hp) {mHP = hp;}
+        void setAttack(int att) {mAttack = att;}
+        void setProtection(int prot) {mProtection = prot;}
+        void setDamage(std::pair<int, int> damage) {mDamage = damage;}
 
-        void AddHP(float hp) {_hp += hp;}
-        void AddAttack(int att) {_attack += att;}
-        void AddProtection(int prot) {_protection += prot;}
-        void AddDamage(int dam) {_damage.first += dam; _damage.second += dam;}
+        void AddHP(float hp) {mHP += hp;}
+        void AddAttack(int att) {mAttack += att;}
+        void AddProtection(int prot) {mProtection += prot;}
+        void AddDamage(int dam) {mDamage.first += dam; mDamage.second += dam;}
 
         void GetInjured(float damage);
         int GenerateDamage();

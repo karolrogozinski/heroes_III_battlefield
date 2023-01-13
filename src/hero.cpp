@@ -9,28 +9,93 @@ PYBIND11_MODULE(hero, m)
 {
     py::class_<Hero>(m, "Hero")
         .def(py::init<std::string, int, int, int, int>(), "name"_a, "attack"_a, "protection"_a, "level"_a = 0, "exp"_a = 0)
-        .def("GetName", &Hero::GetName)
-        .def("GetAttack", &Hero::GetAttack)
-        .def("GetProtection", &Hero::GetProtection)
-        .def("GetLevel", &Hero::GetLevel)
-        .def("GetExp", &Hero::GetExp)
-        .def("GetAbilities", &Hero::GetAbilities)
+        .def("getName", &Hero::getName)
+        .def("getAttack", &Hero::getAttack)
+        .def("getProtection", &Hero::getProtection)
+        .def("getLevel", &Hero::getLevel)
+        .def("getExp", &Hero::getExp)
+        .def("getAbilities", &Hero::getAbilities)
 
-        .def("SetName", &Hero::SetName)
-        .def("SetAttack", &Hero::SetAttack)
-        .def("SetProtection", &Hero::SetProtection)
-        .def("SetLevel", &Hero::SetLevel)
-        .def("SetExp", &Hero::SetExp)
+        .def("setName", &Hero::setName)
+        .def("setAttack", &Hero::setAttack)
+        .def("setProtection", &Hero::setProtection)
+        .def("setLevel", &Hero::setLevel)
+        .def("setExp", &Hero::setExp)
 
         .def("AddExp", &Hero::AddExp)
         .def("AddAttack", &Hero::AddAttack)
         .def("AddProtection", &Hero::AddProtection)
-        .def("AddAbility", &Hero::AddAbility);
+        .def("AddAbility", &Hero::AddAbility)
+        .def("ConcatStack", &Hero::ConcatStack);
 }
 
 
 void Hero::AddAbility(const Ability& Ab)
 {
-    APtr NewAbility = APtr(new Ability(Ab._a)); 
-    _abilities.push_back(NewAbility);
+    APtr NewAbility = APtr(new Ability(Ab.mValue)); 
+    mAbilities.push_back(NewAbility);
+}
+
+void Hero::AddForce(Stack& stack)
+{
+    SPtr StackPtr = SPtr(new Stack(stack));
+    mForces.push_back(StackPtr);
+}
+
+void Hero::AddGood(unsigned int i, unsigned int value)
+{
+    if (i != 0)
+    {
+        mGoods[i] += value;
+    } else {
+        int expDiff = mLvlExpLimit - mExp;
+        bool nextLevel = expDiff < value;
+        if (nextLevel)
+        {
+            mLevel += 1;
+            mExp = value - expDiff;
+            mLvlExpLimit = CountNewExpLimit();
+        } else {
+            mExp += value;
+        }
+    }
+}
+
+void Hero::ReduceGood(unsigned int i, unsigned int value)
+{
+    if (i = 0) {return;}
+    if (mGoods[i] < value)
+    {
+        mGoods[i] = 0;
+    } else {
+        mGoods[i] -= value;
+    }
+}
+
+int Hero::CountNewExpLimit()
+{
+    double newLimit = pow(mLevel, 2) * 25;
+    return (int) newLimit;
+}
+
+SPtr Hero::getStack(std::pair<int, int> cords)
+{
+    for (auto stack: mForces)
+    {
+        if (stack->getCords() == cords){
+            return stack;
+        }
+    }
+}
+
+void Hero::AddStack(SPtr newStackPtr)
+{
+    for (SPtr stackPtr: mForces)
+    {
+        if (stackPtr->getID() == newStackPtr->getID())
+            stackPtr->ConcatStack(newStackPtr);
+            return;
+    }
+
+    mForces.push_back(newStackPtr);
 }

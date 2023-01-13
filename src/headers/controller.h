@@ -12,19 +12,19 @@ typedef std::map<std::string, sectionVec> settingsMap;
 
 class Controller
 {
-    settingsMap _settings;
-    std::string _relPath = "../conf.ini";
+    settingsMap mSettings;
+    std::string mRelPath = "../conf.ini";
 
     void ReadConfig();
 
     public:
         Controller()
         {
-            _settings = settingsMap();
+            mSettings = settingsMap();
             std::cout << "readconfig" << std::endl;
             ReadConfig();
-            // std::cout << _settings.size() << std::endl;
-            // for (settingsMap::iterator it = _settings.begin(); it != _settings.end(); ++it)
+            // std::cout << mSettings.size() << std::endl;
+            // for (settingsMap::iterator it = mSettings.begin(); it != mSettings.end(); ++it)
             // {
             //     std::cout << it->first << std::endl;
             // }
@@ -33,14 +33,14 @@ class Controller
 
         Controller(std::string relPath)
         {
-            _relPath = relPath;
-            _settings = settingsMap();
+            mRelPath = relPath;
+            mSettings = settingsMap();
             ReadConfig();
         }
 
-        settingsMap& GetSettings() {return _settings;}
-        std::string GetPath() {return _relPath;}
-        void SetPath(std::string relPath) {_relPath = relPath;}
+        settingsMap& getSettings() {return mSettings;}
+        std::string getPath() {return mRelPath;}
+        void setPath(std::string relPath) {mRelPath = relPath;}
 
         void UpdateSettings(const std::string& section,const std::string& field, std::string value);
         std::string GetSetting(const std::string& section, const std::string& field);

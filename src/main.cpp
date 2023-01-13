@@ -36,17 +36,17 @@ int main()
     // delete Nico;
     // delete Niner;
 
-    SettingsController contr = SettingsController();
-    settingsMap settings = contr.GetSettings();
-    std::cout << settings.size() << std::endl;
-    for (settingsMap::iterator it = settings.begin(); it != settings.end(); ++it)
-    {
-        std::cout << it->first << std::endl;
-    }
+    // Controller contr = Controller();
+    // settingsMap settings = contr.GetSettings();
+    // std::cout << settings.size() << std::endl;
+    // for (settingsMap::iterator it = settings.begin(); it != settings.end(); ++it)
+    // {
+    //     std::cout << it->first << std::endl;
+    // }
 
-    float value;
-    bool bRv = contr.GetSetting("MUSIC", "VOLUME", value);
-    std::cout << value << std::endl;
+    // float value;
+    // bool bRv = contr.GetSetting("MUSIC", "VOLUME", value);
+    // std::cout << value << std::endl;
 
     return 0;
 }

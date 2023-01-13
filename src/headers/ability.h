@@ -1,22 +1,23 @@
+
 class Ability
 {
     public:
-        int _a;
+        int mValue;
 
         Ability()
         {
-            _a = 0;
+            mValue = 0;
         }
 
         Ability(int a)
         {
-            _a = a;
+            mValue = a;
         }
 
         Ability(const Ability& Ab)
         {
-            _a = Ab._a;
+            mValue = Ab.mValue;
         }
 
-        const int GetAbility() {return _a;}
+        const int getAbility() {return mValue;}
 };

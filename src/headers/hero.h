@@ -86,5 +86,6 @@ class Hero
         void ReduceGood(unsigned int i, unsigned int value);
 
         int CountNewExpLimit();
+        void AddStack(SPtr stackPtr);
 
 };

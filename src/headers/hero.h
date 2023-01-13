@@ -11,6 +11,7 @@ typedef std::shared_ptr<Stack> SPtr;
 class Hero
 {
     std::string mName;
+    bool mPlayer;
     int mAttack;
     int mProtection;
     int mLevel;
@@ -19,9 +20,11 @@ class Hero
     std::vector<unsigned int> mGoods;
     std::vector<APtr> mAbilities;
     std::vector<SPtr> mForces;
+    std::pair<int, int> mCords;
+    const int mForcesNum = 7;
 
     public:
-        Hero() : mName(""), mAttack(0), mProtection(0),
+        Hero() : mPlayer(false), mName(""), mAttack(0), mProtection(0),
                  mLevel(0), mExp(0), mLvlExpLimit(25)
             {
                 mAbilities = std::vector<APtr>();
@@ -31,9 +34,11 @@ class Hero
                 {
                     mGoods.push_back(0);
                 }
+                mCords = {0, 0};
             }
 
         Hero(std::string name,
+            bool type,
             int attack,
             int protection,
             int level = 0,
@@ -41,6 +46,7 @@ class Hero
             int firstExpLimit = 25)
         {
             mName = name;
+            mPlayer = type;
             mAttack = attack;
             mProtection = protection;
             mAbilities = std::vector<APtr>();
@@ -62,12 +68,14 @@ class Hero
         int getExp() {return mExp;}
         std::vector<APtr>& getAbilities() {return mAbilities;}
         std::vector<SPtr>& getForces() {return mForces;}
+        SPtr getStack(std::pair<int, int> cords);
 
         void setName(std::string sGname) {mName = sGname;}
         void setAttack(int nGatt) {mAttack = nGatt;}
         void setProtection(int nGprot) {mProtection = nGprot;}
         void setLevel(int nGlevel) {mLevel = nGlevel;}
         void setExp (int nGexp) {mExp = nGexp;}
+        void setCords (int x, int y) {mCords.first = x; mCords.second = y;}
 
         void AddExp (int nGexp) {mExp += nGexp;}
         void AddAttack(int nGatt) {mAttack += nGatt;}
@@ -78,6 +86,5 @@ class Hero
         void ReduceGood(unsigned int i, unsigned int value);
 
         int CountNewExpLimit();
-    
 
 };

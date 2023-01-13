@@ -76,3 +76,13 @@ int Hero::CountNewExpLimit()
     double newLimit = pow(mLevel, 2) * 25;
     return (int) newLimit;
 }
+
+SPtr Hero::getStack(std::pair<int, int> cords)
+{
+    for (auto stack: mForces)
+    {
+        if (stack->getCords() == cords){
+            return stack;
+        }
+    }
+}

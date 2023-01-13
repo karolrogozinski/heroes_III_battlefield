@@ -1,4 +1,30 @@
 #include "./headers/stack.h"
+#include <pybind11/pybind11.h>
+namespace py = pybind11;
+
+PYBIND11_MODULE(stack, m)
+{
+    py::class_<Stack>(m, "Stack")
+        .def(py::init<>())
+        .def(py::init<int>())
+        .def(py::init<const Stack&)
+        .def("AddUnit", &Stack::AddUnit)
+        .def("AddUnit", &Stack::AddUnit(UPtr))
+        .def("AddUnit", &Stack::AddUnit(Unit*))
+        .def("BeAttacked", &Stack::BeAttacked(float))
+        .def("Attack", &Stack::Attack(Stack&))
+        .def("Attack", &Stack::Attack(std::shared_ptr<Stack>))
+        .def("getUnits", &Stack::getUnits())
+        .def("getSize", &Stack::getSize())
+        .def("getProtection", &Stack::getAttack())
+        .def("getID", &Stack::getID())
+        .def("AddUnit", &Stack::AddUnit())
+        .def("AddUnit", &Stack::AddUnit(UPtr))
+        .def("AddUnit", &Stack::AddUnit(Unit*))
+        .def("BeAttack", &Stack::BeAttacked(float))
+        .def("Attack", &Stack::(Stack&))
+        .def("Attack", &Stack::(std::shared_ptr<Stack>))
+}
 
 
 void Stack::AddUnit()

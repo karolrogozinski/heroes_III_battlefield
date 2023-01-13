@@ -1,50 +1,34 @@
+#include <iostream>
 #include <vector>
+#include <algorithm>
+#include <memory>
 #include "hexNode.h"
+#include "hero.h"
 
-typedef std::vector<std::vector<HexNode>> MapNodes; 
+typedef std::shared_ptr<Hero> HPtr;
+typedef std::pair<int, int> cordsT;
 
 class Battlefield
 {
-    MapNodes mMap;
-    const unsigned int mSize = 13;
+    HPtr mEnemy;
+    HPtr mPlayer;
+    const int mSize = 11;
 
     public:
-        Battlefield()
-        {
-            mMap = MapNodes();
-            for (int i1 = 0; i1 < mSize; ++i1)
-            {
-                std::vector<HexNode> row = std::vector<HexNode>();
-                for (int i2 = 0; i2 < mSize; ++i2)
-                {
-                    row.push_back(HexNode());
-                }
-                mMap.push_back(row);
-            }
-        }
+        Battlefield(HPtr player, HPtr enemy);
+        Battlefield(Hero& player, Hero& enemy);
 
-        MapNodes& getMap() { return mMap;}
+        void generateDefUnitsCords(HPtr Hero, bool leftSide);
 
-        HexNode& GetNode(int x, int y)
-        {
-            return mMap[y][x];
-        }
+        bool MoveStack(cordsT startCords,
+                       cordsT finalCords,
+                       bool isPlayer);
+        bool Attack(cordsT itsCords, cordsT enemyCords, bool isPlayer);
+        std::vector<std::shared_ptr<Stack>> GetForces(bool isPlayer);
 
-        std::shared_ptr<Stack> GetStackPtr(int x, int y)
-        {
-            return mMap[y][x].getStack();
-        }
-
-        void InsertStack(int x, int y, Stack& stack)
-        {
-            mMap[y][x].setStack(stack);
-        }
-
-        void InsertStack(int x, int y, std::shared_ptr<Stack> stack)
-        {
-            mMap[y][x].setStack(stack);
-        }
-
-        bool MoveStack(int x1, int y1, int x2, int y2);
-        bool Attack(int x1, int y1, int x2, int y2);
+        std::vector<cordsT> GetAllOccupiedCords();
+        
+        std::vector<cordsT> GetPossibleMoveCords(
+            cordsT cords,
+            bool isPlayer); 
 };

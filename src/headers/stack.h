@@ -1,16 +1,21 @@
-#include "unit.h"
 #include <vector>
 #include <memory>
+#include <utility>
+
+#include "unit.h"
 
 typedef std::shared_ptr<Unit> UPtr;
 
 class Stack
 {
     int mID;
+    int mPlayerType;
     std::vector<UPtr> mUnits;
     int mSize;
     int mProtection;
     int mAttack;
+    int mSpeed;
+    std::pair<int, int> mCords;
 
     public:
         Stack()
@@ -20,6 +25,8 @@ class Stack
             mSize = 0;
             mProtection = 0;
             mAttack = 0;
+            mSpeed = 2;
+            mCords = std::pair<int, int>();
         }
 
         Stack(int id)
@@ -47,6 +54,10 @@ class Stack
         int getProtection() {return mProtection;}
         int getAttack() {return mAttack;}
         int getID() {return mID;}
+        int getSpeed() {return mSpeed;}
+        std::pair<int, int> getCords() {return mCords;}
+
+        void setCords(std::pair<int, int> cords) {mCords = cords;}
 
         void AddUnit();
         void AddUnit(UPtr unit);

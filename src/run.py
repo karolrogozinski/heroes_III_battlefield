@@ -1,4 +1,4 @@
-import menu
+import menu as menu
 
 
 def main():

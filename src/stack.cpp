@@ -142,3 +142,11 @@ bool operator== (const Stack& lhs, const Stack& rhs)
         lhs.mProtection == rhs.mProtection &&
         lhs.mAttack == rhs.mAttack;
 }
+
+bool Stack::ConcatStack(std::shared_ptr<Stack> stackPtr)
+{
+    for (auto unitPtr: stackPtr->getUnits)
+    {
+        mUnits.push_back(unitPtr);
+    }
+}

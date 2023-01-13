@@ -62,6 +62,7 @@ class Stack
         void AddUnit();
         void AddUnit(UPtr unit);
         void AddUnit(Unit* unit);
+        void ConcatStack(SPtr stackPtr);
 
         void BeAttacked(float damage);
         bool Attack(Stack& stack);

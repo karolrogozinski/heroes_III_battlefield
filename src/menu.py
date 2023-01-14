@@ -11,6 +11,9 @@ from pygame_menu.locals import CURSOR_HAND, ORIENTATION_VERTICAL, ORIENTATION_HO
 from interface.battlefield.battlefield import BattefieldInterface
 
 import controller
+import battlefield
+import hero
+import stack
 
 
 class MainMenu():
@@ -171,6 +174,7 @@ class MainMenu():
             pygame.display.flip()
     
         if self.RUN_GAME:
+
             self.b_field = BattefieldInterface()
             self.b_field.amounts = [self.p1, self.p2, self.p3, self.p4, self.p5, self.p6, self.p7]
             self.b_field.run()

@@ -25,7 +25,8 @@ PYBIND11_MODULE(hero, m)
         .def("AddExp", &Hero::AddExp)
         .def("AddAttack", &Hero::AddAttack)
         .def("AddProtection", &Hero::AddProtection)
-        .def("AddAbility", &Hero::AddAbility);
+        .def("AddAbility", &Hero::AddAbility)
+        .def("AddStack", &Hero::AddStack);
 }
 
 

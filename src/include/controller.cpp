@@ -1,4 +1,4 @@
-#include "./headers/controller.h"
+#include "../headers/controller.h"
 #include <pybind11/pybind11.h>
 #include <pybind11/complex.h>
 #include <pybind11/functional.h>

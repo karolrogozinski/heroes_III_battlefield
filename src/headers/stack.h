@@ -3,10 +3,12 @@
 #include <utility>
 #include <cstdlib>
 
+typedef std::pair<int, int> cordsT;
 class Stack
 {
     int mID;
-    int mPlayerType;
+    // 0 - usual, 1 - shooter, (2- flying)
+    int mType;
 
     unsigned int mHP;
     unsigned int mUnitHP;
@@ -16,9 +18,9 @@ class Stack
 
     int mProtection;
     int mAttack;
-    std::pair<int, int> mDamage;
+    cordsT mDamage;
 
-    std::pair<int, int> mCords;
+    cordsT mCords;
 
     public:
         typedef std::shared_ptr<Stack> SPtr;
@@ -29,7 +31,7 @@ class Stack
             mProtection = 1;
             mAttack = 1;
             mSpeed = 1;
-            mCords = std::pair<int, int>();
+            mCords = cordsT();
         }
 
         Stack(int id)
@@ -45,7 +47,7 @@ class Stack
               mAttack(att), mSpeed(speed)
         {
             mHP = mUnitHP * mSize;
-            mCords = std::pair<int, int>();
+            mCords = cordsT();
         }
 
         Stack(const Stack& stack)
@@ -59,22 +61,22 @@ class Stack
         ~Stack(){}
 
         int getID() {return mID;}
-        int getPlayerType() {return mPlayerType;}
+        int getPlayerType() {return mType;}
         int getSize() {return mSize;}
         int getSpeed() {return mSpeed;}
         int getProtection() {return mProtection;}
         int getAttack() {return mAttack;}
-        std::pair<int, int> getDamage() {return mDamage;}
-        std::pair<int, int> getCords() {return mCords;}
+        cordsT getDamage() {return mDamage;}
+        cordsT getCords() {return mCords;}
 
         void setID(int id) {mID = id;}
-        void setPlayerType(int type) {mPlayerType = type;}
+        void setPlayerType(int type) {mType = type;}
         void setSize(int size) {mSize = size;}
         void setSpeed(int speed) {mSpeed = speed;}
         void setProtection(int prot) {mProtection = prot;}
         void setAttack(int attack) {mAttack = attack;}
-        void setDamage(std::pair<int, int> damage) {mDamage = damage;}
-        void setCords(std::pair<int, int> cords) {mCords = cords;}
+        void setDamage(cordsT damage) {mDamage = damage;}
+        void setCords(cordsT cords) {mCords = cords;}
 
         bool BeAttacked(float damage);
         bool Attack(SPtr stackPtr);

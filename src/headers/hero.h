@@ -20,10 +20,10 @@ class Hero
     public:
         Hero() : mName(""), mIsPlayer(false){}
 
-        Hero(std::string name, bool type) : mName(name), mIsPlayer(type) {}
+        Hero(std::string name, bool isPlayer) : mName(name), mIsPlayer(isPlayer) {}
 
-        Hero(std::string name, bool type, std::vector<SPtr> forces) :
-             mName(name), mIsPlayer(type), mForces(forces) {}
+        Hero(std::string name, bool isPlayer, std::vector<SPtr> forces) :
+             mName(name), mIsPlayer(isPlayer), mForces(forces) {}
 
         std::string getName() {return mName;}
         bool getIsPlayer() {return mIsPlayer;}

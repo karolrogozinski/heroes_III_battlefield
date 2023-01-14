@@ -1,20 +1,20 @@
-#include "./headers/battlefield.h"
-#include <pybind11/pybind11.h>
-namespace py = pybind11;
-PYBIND11_DECLARE_HOLDER_TYPE(Stack, std::shared_ptr<Stack>)
-PYBIND11_MODULE(battlefield, m)
-{
-    py::class_<Battlefield>(m, "Battlefield")
-        .def(py::init<HPtr, HPtr>())
-        .def(py::init<Hero&, Hero&>())
-        .def("MoveStack", &Battlefield::MoveStack)
-        .def("Attack", &Battlefield::Attack)
-        .def("GetAllOccupiedCords", &Battlefield::GetAllOccupiedCords)
-        .def("GetPossibleMoveCords", &Battlefield::GetPossibleMoveCords);
-}
+#include "./headers/battle.h"
+// #include <pybind11/pybind11.h>
+// namespace py = pybind11;
+// PYBIND11_DECLARE_HOLDER_TYPE(Stack, std::shared_ptr<Stack>)
+// PYBIND11_MODULE(battlefield, m)
+// {
+//     py::class_<Battle>(m, "Battle")
+//         .def(py::init<HPtr, HPtr>())
+//         .def(py::init<Hero&, Hero&>())
+//         .def("MoveStack", &Battle::MoveStack)
+//         .def("Attack", &Battle::Attack)
+//         .def("GetAllOccupiedCords", &Battle::GetAllOccupiedCords)
+//         .def("GetPossibleMoveCords", &Battle::GetPossibleMoveCords);
+// }
 
 
-void Battlefield::generateDefUnitsCords(HPtr Hero, bool leftSide)
+void Battle::generateDefUnitsCords(HPtr Hero, bool leftSide)
 {
     int x;
     if (leftSide)
@@ -32,13 +32,13 @@ void Battlefield::generateDefUnitsCords(HPtr Hero, bool leftSide)
     return;
 }
 
-Battlefield::Battlefield(HPtr player, HPtr enemy) : mPlayer(player), mEnemy(enemy)
+Battle::Battle(HPtr player, HPtr enemy) : mPlayer(player), mEnemy(enemy)
 {
     generateDefUnitsCords(mPlayer, true);
     generateDefUnitsCords(mEnemy, false);
 }
 
-Battlefield::Battlefield(Hero& player, Hero& enemy)
+Battle::Battle(Hero& player, Hero& enemy)
 {
     mPlayer = std::make_shared<Hero>(player);
     mEnemy = std::make_shared<Hero>(enemy);
@@ -89,12 +89,12 @@ std::vector<cordsT> CalcPossibleMovePoints(
     return final_points;
 }
 
-std::vector<cordsT> Battlefield::GetPossibleMoveCords(
+std::vector<cordsT> Battle::GetPossibleMoveCords(
     cordsT cords,
     bool isPlayer)
 {   
     SPtr stackPtr;
-    stackPtr = isPlayer ? mPlayer->getStack(cords) : mEnemy->getStack(cords);
+    stackPtr = isPlayer ? mPlayer->GetStack(cords) : mEnemy->GetStack(cords);
     std::vector<cordsT> currCords = CalcPossibleMovePoints(stackPtr->getSpeed(), cords);
     std::vector<cordsT> occupiedCords = GetAllOccupiedCords();
     // for (cordsT cords: occupiedCords)
@@ -114,7 +114,7 @@ std::vector<cordsT> GetAllUserOccupiedCords(HPtr user)
     return occupiedCords;
 }
 
-std::vector<cordsT> Battlefield::GetAllOccupiedCords()
+std::vector<cordsT> Battle::GetAllOccupiedCords()
 {
     std::vector<cordsT> occupiedPlayerCords;
     std::vector<cordsT> occupiedEnemyCords;
@@ -127,7 +127,7 @@ std::vector<cordsT> Battlefield::GetAllOccupiedCords()
     return occupiedPlayerCords;
 }
 
-bool Battlefield::MoveStack(cordsT startCords,
+bool Battle::MoveStack(cordsT startCords,
                             cordsT finalCords,
                             bool isPlayer)
 {
@@ -139,35 +139,62 @@ bool Battlefield::MoveStack(cordsT startCords,
         return isPossible;
     
     if (isPlayer)
-        mPlayer->getStack(startCords)->setCords(finalCords);
+        mPlayer->GetStack(startCords)->setCords(finalCords);
     else
-        mEnemy->getStack(startCords)->setCords(finalCords);
+        mEnemy->GetStack(startCords)->setCords(finalCords);
     return isPossible;
 }
 
-bool Battlefield::Attack(cordsT itsCords, cordsT enemyCords, bool isPlayer)
-{
-    SPtr attackingStack;
-    SPtr attackedStack;
-    bool isPossible;
-    std::vector<cordsT> cordsOfAttacking = GetAllUserOccupiedCords(isPlayer ? mPlayer : mEnemy);
+std::pair<bool, cordsT> Battle::GetPossibleMoveCords(cordsT itsCords, cordsT opponentCords, bool isPlayer)
+{   
+    const std::vector<cordsT> possibleMovsDiffs = {{-1, -1}, {-1, 0}, {0, 1}, {1, 0}, {1, -1}, {0, 1}};
+    for (cordsT moveDiff: possibleMovsDiffs)
+    {
+        if (MoveStack(itsCords,
+                     {opponentCords.first + moveDiff.first,
+                      opponentCords.second + moveDiff.second}, 
+                      isPlayer))
+            {
+                return {true, moveDiff};
+            }
+    }
+    return {false, {}};
+}
 
-    isPossible = std::find(cordsOfAttacking.begin(),
-                           cordsOfAttacking.end(),
-                           itsCords) != cordsOfAttacking.end();
-    if (!isPossible)
-        return isPossible;
+bool Battle::CheckBasicAttackPoss(cordsT itsCords, cordsT opponentCords, bool isPlayer)
+{
+    std::vector<cordsT> cordsOfAttacking = GetAllUserOccupiedCords(isPlayer ? mPlayer : mEnemy);
+    if (!(std::find(cordsOfAttacking.begin(),
+                    cordsOfAttacking.end(),
+                    itsCords) != cordsOfAttacking.end()))
+        return false;
     
     std::vector<cordsT> cordsOfAttacked = GetAllUserOccupiedCords(isPlayer ? mEnemy : mPlayer);
-    isPossible = std::find(cordsOfAttacked.begin(),
-                           cordsOfAttacked.end(),
-                           enemyCords) != cordsOfAttacked.end();
-    if (!isPossible)
-        return isPossible;
-
-    attackingStack = isPlayer ? mPlayer->getStack(itsCords) : mEnemy->getStack(itsCords);
-    attackedStack = isPlayer ? mEnemy->getStack(itsCords) : mPlayer->getStack(itsCords);
-
-    attackedStack->Attack(attackedStack);
+    if (!(std::find(cordsOfAttacked.begin(),
+                    cordsOfAttacked.end(),
+                    opponentCords) != cordsOfAttacked.end()))
+        return false;
     return true;
+}
+
+
+std::pair<bool, bool> Battle::PerformAttack(cordsT itsCords, cordsT opponentCords,
+                                            bool isPlayer, int attackingStackType)
+{
+    if (!CheckBasicAttackPoss(itsCords, opponentCords, isPlayer))
+        return {false, false};
+    if (attackingStackType == 1)
+    {
+        std::pair<bool, cordsT> possibleMoveResponse = GetPossibleMoveCords(itsCords,
+                                                                        opponentCords,
+                                                                        isPlayer);
+        bool moveHappened = MoveStack(itsCords, possibleMoveResponse.second, isPlayer);
+        if (!possibleMoveResponse.first || !moveHappened)
+            return {false, false};
+    }
+
+    SPtr attackingStack = isPlayer ? mPlayer->GetStack(itsCords) : mEnemy->GetStack(itsCords);
+    SPtr attackedStack = isPlayer ? mEnemy->GetStack(itsCords) : mPlayer->GetStack(itsCords);
+    
+    return {true, attackedStack->Attack(attackedStack)};
 }

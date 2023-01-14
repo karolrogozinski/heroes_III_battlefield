@@ -42,7 +42,7 @@ bool Stack::BeAttacked(float damage)
     return mSize < 0 ? true : false;
 }
 
-int GetPseudoRandom(std::pair<int, int> range)
+int GetPseudoRandom(cordsT range)
 {
     int size = range.second - range.first + 1;
     int value = range.first + (std::rand() % size);

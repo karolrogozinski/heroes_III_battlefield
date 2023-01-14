@@ -10,11 +10,11 @@ PYBIND11_MODULE(controller, m)
     py::class_<Controller>(m, "Controller")
         .def(py::init<>())
         .def(py::init<std::string>())
-        .def("getSettings", &Controller::getSettings)
-        .def("getPath", &Controller::getPath)
-        .def("setPath", &Controller::setPath)
-        .def("UpdateSettings", &Controller::UpdateSettings, py::arg("section"), py::arg("field"), py::arg("value"))
-        .def("GetSetting", &Controller::GetSetting);
+        .def("get_settings", &Controller::getSettings)
+        .def("get_path", &Controller::getPath)
+        .def("set_path", &Controller::setPath)
+        .def("update_settings", &Controller::UpdateSettings, py::arg("section"), py::arg("field"), py::arg("value"))
+        .def("get_setting", &Controller::GetSetting);
 }
 
 void Controller::UpdateSettings(const std::string& section,

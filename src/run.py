@@ -1,8 +1,8 @@
-import menu as menu
+from .menu import MainMenu
 
 
 def main():
-    mm = menu.MainMenu()
+    mm = MainMenu()
     mm.run()
 
 

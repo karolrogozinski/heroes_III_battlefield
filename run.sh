@@ -14,6 +14,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     g++ -std=c++17 -shared -undefined dynamic_lookup -I./pybind11/include/ `python3.10 -m pybind11 --includes` src/include/stack.cpp -o src/stack.so `python3-config --ldflags`
     g++ -std=c++17 -shared -undefined dynamic_lookup -I./pybind11/include/ `python3.10 -m pybind11 --includes` src/include/hero.cpp src/include/stack.cpp -o src/hero.so `python3-config --ldflags`
     g++ -std=c++17 -shared -undefined dynamic_lookup -I./pybind11/include/ `python3.10 -m pybind11 --includes` src/include/battle.cpp src/include/hero.cpp src/include/stack.cpp -o src/battle.so `python3-config --ldflags`
-    python3.10 ./src/run.py
+    python3.10 ./run.py
 fi
     
+

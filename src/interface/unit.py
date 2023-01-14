@@ -4,7 +4,8 @@ import pygame
 
 
 class UnitInterface:
-    def __init__(self, id: int, stack_size: int, speed=1, alive: bool = True, enemy: bool = False) -> None:
+    def __init__(self, id: int, stack_size: int, speed=1, alive: bool = True,
+                 enemy: bool = False) -> None:
         self.font = pygame.font.SysFont(None, 35)
         self.id = id
         self.stack_size = stack_size
@@ -24,8 +25,10 @@ class UnitInterface:
                 f'sprites/{id}_dead.png'
             )).convert_alpha()
         if enemy:
-            self.image_alive = pygame.transform.flip(self.image_alive, True, False)
-            self.image_dead = pygame.transform.flip(self.image_dead, True, False)
+            self.image_alive = pygame.transform.flip(self.image_alive,
+                                                     True, False)
+            self.image_dead = pygame.transform.flip(self.image_dead,
+                                                    True, False)
 
     def get_unit_surf(self) -> pygame.Surface:
         if self.alive:
@@ -33,11 +36,7 @@ class UnitInterface:
         return self.image_dead
 
     def get_size_surf(self) -> pygame.Surface:
-        # if self.enemy:
-            # color = (200, 0, 0)
-        # else:
         color = (255, 255, 255)
-
         font_surf = self.font.render(f'{self.stack_size}', True, color)
 
         if self.alive:

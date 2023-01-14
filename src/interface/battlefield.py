@@ -3,12 +3,14 @@ import random
 
 import pygame
 
-from interface.battlefield.hexfield import HexFieldInterface
-from interface.battlefield.unit import UnitInterface
+from .hexfield import HexFieldInterface
+from .unit import UnitInterface
+
+from ..battle import Battle
 
 
-class BattefieldInterface():
-    def __init__(self) -> None:
+class BattefieldInterface:
+    def __init__(self, battle: Battle) -> None:
         pygame.init()
         self.window_size = (1280, 720)
         self.dirname = os.path.dirname(os.path.abspath(__file__))
@@ -19,12 +21,13 @@ class BattefieldInterface():
         self.transparency_step = 0.5
         self.music_path = os.path.join(
             self.dirname,
-            '../../music/Fortuna.mp3'
+            '../music/Fortuna.mp3'
         )
-        self.amounts = None
         self.units = []
-        self.start_cords = [(0, 0), (0, 2), (0, 4), (0, 5), (0, 6), (0, 8), (0, 10)]
-    
+        self.battle = battle
+        self.player = None
+        self.enemy = None
+
     def create_battlefield(self, color: tuple[int], size: int) -> None:
         self.battlefield = []
         for x in range(size):
@@ -34,7 +37,8 @@ class BattefieldInterface():
                 else:
                     pos = 332
                 hf = HexFieldInterface(
-                    points=HexFieldInterface.generate_hexagon(33, x, y, pos, 100),
+                    points=HexFieldInterface.generate_hexagon(33, x,
+                                                              y, pos, 100),
                     screen=self.screen,
                     color=color,
                     cords=(x, y)
@@ -50,7 +54,7 @@ class BattefieldInterface():
         self.background_image = pygame.image.load(
             os.path.join(
                 self.dirname,
-                '../../images/battlefield_background.jpg'
+                '../images/battlefield_background.jpg'
             ))
         self.blue_flag = pygame.image.load(
             os.path.join(
@@ -73,28 +77,30 @@ class BattefieldInterface():
             if hf.is_active():
                 return hf
 
+    def set_players(self) -> None:
+        self.player = self.battle.getPlayer()
+        self.enemy = self.battle.getEnemy()
+
     def create_units(self) -> None:
-        for idx, (amount, cords) in enumerate(zip(self.amounts, self.start_cords)):
-            temp_unit = UnitInterface(idx+1, amount, idx)
-            temp_enemy = UnitInterface(idx+8, amount*2, idx, enemy=True)
-            self.units.append(temp_unit)
-            self.units.append(temp_enemy)
-            self.find_by_cords(cords).set_unit(temp_unit)
-            self.find_by_cords((cords[0]+10, cords[1])).set_unit(temp_enemy)
+        for stack in self.player.getFroces():
+            ...
 
     def sort_units(self) -> None:
         n = len(self.units)
         for i in range(n):
             for j in range(0, n-i-1):
                 if self.units[j].speed < self.units[j+1].speed:
-                    self.units[j], self.units[j+1] = self.units[j+1], self.units[j]
+                    self.units[j], self.units[j+1] =\
+                        self.units[j+1], self.units[j]
 
     def sort_battlefield(self) -> None:
         n = len(self.battlefield)
         for i in range(n):
             for j in range(0, n-i-1):
-                if self.battlefield[j].cords[1] > self.battlefield[j+1].cords[1] :
-                    self.battlefield[j], self.battlefield[j+1] = self.battlefield[j+1], self.battlefield[j]
+                if self.battlefield[j].cords[1] >\
+                        self.battlefield[j+1].cords[1]:
+                    self.battlefield[j], self.battlefield[j+1] =\
+                        self.battlefield[j+1], self.battlefield[j]
 
     def determine_polygon(self, x, y) -> tuple[int]:
         for hf in self.battlefield:
@@ -144,6 +150,7 @@ class BattefieldInterface():
         pygame.mixer.music.play(-1)
 
     def run(self) -> None:
+        self.set_players()
         self.play_music()
         self.create_bg()
         self.create_battlefield(color=(0, 0, 0, 255), size=11)
@@ -152,14 +159,15 @@ class BattefieldInterface():
         self.sort_units()
 
         mouse_x, mouse_y = 0, 0
-        possible_moves = [(random.randint(0, 10), random.randint(0, 10)) for i in range(30)]
+        possible_moves = [(random.randint(0, 10),
+                           random.randint(0, 10)) for i in range(30)]
         self.units[0].active = True
 
         while self.RUN_BF:
             moved = 0
             mouse_clicked = False
 
-            self.update_transparency()            
+            self.update_transparency()
             self.draw_bg()
 
             for event in pygame.event.get():
@@ -180,7 +188,8 @@ class BattefieldInterface():
             self.change_color((0, 150, 0, 175), self.get_active())
             self.move_enemy(possible_moves)
 
-            if polygon and not mouse_clicked and polygon.cords in possible_moves:
+            if polygon and not mouse_clicked and\
+               polygon.cords in possible_moves:
                 if polygon.get_unit():
                     if polygon.get_unit().is_enemy():
                         self.change_color((150, 0, 0, 50), polygon)
@@ -190,10 +199,10 @@ class BattefieldInterface():
                 moved = 1
                 self.move_unit(polygon.cords)
 
-
             self.draw_battlefield()
             if moved:
                 self.next_unit()
-                possible_moves = [(random.randint(0, 10), random.randint(0, 10)) for i in range(20)]
+                possible_moves = [(random.randint(0, 10),
+                                   random.randint(0, 10)) for i in range(20)]
 
             pygame.display.flip()

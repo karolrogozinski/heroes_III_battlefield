@@ -1,7 +1,7 @@
 import pygame
 import numpy as np
 
-from interface.battlefield.unit import UnitInterface
+from .unit import UnitInterface
 
 
 class HexFieldInterface:
@@ -20,8 +20,10 @@ class HexFieldInterface:
         lx, ly = zip(*self.points)
         min_x, min_y, max_x, max_y = min(lx), min(ly), max(lx), max(ly)
 
-        self.target_rect = pygame.Rect(min_x, min_y, max_x - min_x, max_y - min_y)
-        self.shape_surf = pygame.Surface(self.target_rect.size, pygame.SRCALPHA)
+        self.target_rect = pygame.Rect(min_x, min_y,
+                                       max_x - min_x, max_y - min_y)
+        self.shape_surf = pygame.Surface(self.target_rect.size,
+                                         pygame.SRCALPHA)
         self.object = pygame.draw.polygon(
             self.shape_surf,
             self.color,
@@ -33,12 +35,12 @@ class HexFieldInterface:
         center = self.target_rect.center
         self.screen.blit(
             u_surf,
-            u_surf.get_rect(midbottom = (center[0], center[1]+20))
+            u_surf.get_rect(midbottom=(center[0], center[1]+20))
         )
         font_surf = body.get_size_surf()
         self.screen.blit(
             font_surf,
-            font_surf.get_rect(midbottom = (center[0], center[1]+30))
+            font_surf.get_rect(midbottom=(center[0], center[1]+30))
         )
 
     def is_active(self) -> bool:
@@ -81,4 +83,3 @@ class HexFieldInterface:
 
         if self.unit:
             self.draw_unit(self.unit)
-    

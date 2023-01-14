@@ -4,16 +4,14 @@ from typing import Optional
 import pygame
 import pygame_menu
 from pygame_menu.examples import create_example_window
-from pygame_menu.locals import CURSOR_HAND, ORIENTATION_VERTICAL, ORIENTATION_HORIZONTAL, ALIGN_CENTER, \
-    ALIGN_LEFT, ALIGN_RIGHT, POSITION_CENTER, POSITION_NORTH, POSITION_SOUTH, FINGERUP, FINGERDOWN, \
-    FINGERMOTION
+from pygame_menu.locals import ALIGN_CENTER
 
-from interface.battlefield.battlefield import BattefieldInterface
+from .interface.battlefield import BattefieldInterface
 
-import controller
-import battlefield
-import hero
-import stack
+from .controller import Controller
+from .battle import Battle
+from .hero import Hero
+from .stack import Stack
 
 
 class MainMenu():
@@ -31,7 +29,8 @@ class MainMenu():
         self.create_main_menu()
         self.create_settings_menu()
         self.create_play_menu()
-        self.settings_controller = controller.Controller(os.path.join(self.dirname, 'conf.ini'))
+        self.settings_controller = Controller(
+            os.path.join(self.dirname, 'conf.ini'))
         self.set_menu_buttons()
         self.RUN_MENU = True
         self.RUN_GAME = False
@@ -66,12 +65,13 @@ class MainMenu():
             rows=6
         )
 
-        volumes = [(str(10*i), 10*i) for i in range (11)]
+        volumes = [(str(10*i), 10*i) for i in range(11)]
         self.background_image = pygame_menu.BaseImage(
             image_path=os.path.join(self.dirname, 'images/menu_background.jpg')
         )
 
-        fcts = [self.set_1, self.set_2, self.set_3, self.set_4, self.set_5, self.set_6, self.set_7]
+        fcts = [self.set_1, self.set_2, self.set_3, self.set_4,
+                self.set_5, self.set_6, self.set_7]
 
         for i in range(1, 8):
             if i == 4:
@@ -80,14 +80,25 @@ class MainMenu():
                 self.play_menu.add.label('')
 
             image = pygame_menu.BaseImage(
-                image_path=os.path.join(self.dirname, f'interface/battlefield/sprites/{i}_alive.png'),
+                image_path=os.path.join(
+                    self.dirname,
+                    f'interface/sprites/{i}_alive.png')
             ).resize(100, 120)
             self.play_menu.add.image(image)
-            self.play_menu.add.selector('', volumes, default=1, onchange=fcts[i-1])
+            self.play_menu.add.selector(
+                '',
+                volumes,
+                default=1,
+                onchange=fcts[i-1]
+            )
             self.play_menu.add.label('')
 
             if i == 4:
-                self.play_menu.add.button('Play', self.play_game, align=ALIGN_CENTER)
+                self.play_menu.add.button(
+                    'Play',
+                    self.play_game,
+                    align=ALIGN_CENTER
+                )
                 self.play_menu.add.button('Back', pygame_menu.events.BACK)
             else:
                 self.play_menu.add.label('')
@@ -98,16 +109,16 @@ class MainMenu():
 
     def set_2(self, _, amount: int) -> None:
         self.p2 = amount
-    
+
     def set_3(self, _, amount: int) -> None:
         self.p3 = amount
 
     def set_4(self, _, amount: int) -> None:
         self.p4 = amount
-    
+
     def set_5(self, _, amount: int) -> None:
         self.p5 = amount
-    
+
     def set_6(self, _, amount: int) -> None:
         self.p6 = amount
 
@@ -123,12 +134,21 @@ class MainMenu():
             theme=settings_theme,
             title='Settings',
             width=self.menu_size[0]
-        ) 
+        )
 
-        volumes = [(str(i/10), i/10) for i in range (11)]
+        volumes = [(str(i/10), i/10) for i in range(11)]
 
-        self.settings_menu.add.selector('Music: ', [('On', True), ('Off', False)], onchange=self.change_music)
-        self.settings_menu.add.selector('Volume: ', volumes, default=10, onchange=self.change_volume)
+        self.settings_menu.add.selector(
+            'Music: ',
+            [('On', True), ('Off', False)],
+            onchange=self.change_music
+        )
+        self.settings_menu.add.selector(
+            'Volume: ',
+            volumes,
+            default=10,
+            onchange=self.change_volume
+        )
         self.settings_menu.add.button('Back', pygame_menu.events.BACK)
 
     def set_menu_buttons(self):
@@ -164,17 +184,34 @@ class MainMenu():
         self.main_menu.disable()
 
     def run(self) -> None:
-        self.surface = create_example_window('Heroes with AI', self.window_size)
+        self.surface = create_example_window(
+            'Heroes with AI',
+            self.window_size)
         self.clock = pygame.time.Clock()
         self.play_music()
 
         while self.RUN_MENU:
             self.clock.tick(self.fps)
-            self.main_menu.mainloop(self.surface, self.main_background, fps_limit=self.fps)
+            self.main_menu.mainloop(
+                self.surface,
+                self.main_background,
+                fps_limit=self.fps
+            )
             pygame.display.flip()
-    
-        if self.RUN_GAME:
 
-            self.b_field = BattefieldInterface()
-            self.b_field.amounts = [self.p1, self.p2, self.p3, self.p4, self.p5, self.p6, self.p7]
+        if self.RUN_GAME:
+            player = Hero('Test', 1)
+            enemy = Hero('Test', 0)
+            amounts = [self.p1, self.p2, self.p3, self.p4,
+                       self.p5, self.p6, self.p7]
+
+            for idx, size in enumerate(amounts):
+                temp_stack = Stack(idx+1, 0, idx+100, size, 1, 1, 1)
+                temp_stack_enemy = Stack(idx+8, 0, idx+100,
+                                         size*self.difficulty, 1, 1, 1)
+                player.AddStack(temp_stack)
+                enemy.AddStack(temp_stack_enemy)
+
+            battle_ = Battle(player, enemy)
+            self.b_field = BattefieldInterface(battle_)
             self.b_field.run()

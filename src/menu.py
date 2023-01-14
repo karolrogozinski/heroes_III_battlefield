@@ -8,7 +8,7 @@ from pygame_menu.locals import CURSOR_HAND, ORIENTATION_VERTICAL, ORIENTATION_HO
     ALIGN_LEFT, ALIGN_RIGHT, POSITION_CENTER, POSITION_NORTH, POSITION_SOUTH, FINGERUP, FINGERDOWN, \
     FINGERMOTION
 
-from interface.battlefield.battlefield import Battefield
+from interface.battlefield.battlefield import BattefieldInterface
 
 import controller
 
@@ -32,6 +32,7 @@ class MainMenu():
         self.set_menu_buttons()
         self.RUN_MENU = True
         self.RUN_GAME = False
+        self.difficulty = 1
 
     def main_background(self) -> None:
         self.background_image.draw(self.surface)
@@ -170,6 +171,6 @@ class MainMenu():
             pygame.display.flip()
     
         if self.RUN_GAME:
-            self.b_field = Battefield()
+            self.b_field = BattefieldInterface()
+            self.b_field.amounts = [self.p1, self.p2, self.p3, self.p4, self.p5, self.p6, self.p7]
             self.b_field.run()
-    

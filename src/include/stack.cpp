@@ -70,3 +70,9 @@ bool operator== (const Stack& lhs, const Stack& rhs)
         lhs.mProtection == rhs.mProtection &&
         lhs.mAttack == rhs.mAttack;
 }
+
+void Stack::AddUnits(SPtr stackPtr)
+{
+    mSize += stackPtr->getSize();
+    mHP += mUnitHP * stackPtr->getSize();
+}

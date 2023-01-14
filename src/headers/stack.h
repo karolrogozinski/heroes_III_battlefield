@@ -78,6 +78,7 @@ class Stack
 
         bool BeAttacked(float damage);
         bool Attack(SPtr stackPtr);
+        void AddUnits(SPtr stackPtr);
 
         int GenerateStackDamage();
         friend bool operator== (const Stack& lhs, const Stack& rhs);

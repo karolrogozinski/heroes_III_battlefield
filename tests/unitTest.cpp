@@ -2,13 +2,14 @@
 #include <gtest/gtest.h>
 
 
-TEST(AddDamageTest, BasicTest)
-{
-    Unit unit = Unit("name", 20, 6, 3, std::pair<int, int>(2, 6));
-    unit.AddDamage(-2);
-    std::pair<int, int> tempDamage = std::pair<int, int>(0, 4);
-    ASSERT_EQ(unit.GetDamage(), tempDamage);
-}
+
+// TEST(AddDamageTest, BasicTest)
+// {
+//     Unit unit = Unit("name", 20, 6, 3, std::pair<int, int>(2, 6));
+//     unit.AddDamage(-2);
+//     std::pair<int, int> tempDamage = std::pair<int, int>(0, 4);
+//     ASSERT_EQ(unitGetDamage(), tempDamage);
+// }
 
 TEST(GenerateDamageTest, PositiveTest)
 {

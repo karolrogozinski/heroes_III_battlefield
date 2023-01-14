@@ -1,5 +1,8 @@
 #include "./headers/controller.h"
 #include <pybind11/pybind11.h>
+#include <pybind11/complex.h>
+#include <pybind11/functional.h>
+#include <pybind11/chrono.h>
 namespace py = pybind11;
 
 PYBIND11_MODULE(controller, m)
@@ -10,7 +13,7 @@ PYBIND11_MODULE(controller, m)
         .def("getSettings", &Controller::getSettings)
         .def("getPath", &Controller::getPath)
         .def("setPath", &Controller::setPath)
-        .def("UpdateSettings", &Controller::UpdateSettings)
+        .def("UpdateSettings", &Controller::UpdateSettings, py::arg("section"), py::arg("field"), py::arg("value"))
         .def("GetSetting", &Controller::GetSetting);
 }
 

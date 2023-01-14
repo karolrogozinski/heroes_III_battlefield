@@ -1,9 +1,10 @@
 #include <utility>
 #include <string>
 #include <random>
-#include "randomGenerator.h"
+#include <cstdlib>
+// #include "randomGenerator.h"
 
-typedef std::unique_ptr<RandomGenerator> GPtr;
+// typedef std::unique_ptr<RandomGenerator> GPtr;
 
 class Unit
 {

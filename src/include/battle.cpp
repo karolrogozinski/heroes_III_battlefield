@@ -1,4 +1,4 @@
-#include "./headers/battle.h"
+#include "../headers/battle.h"
 // #include <pybind11/pybind11.h>
 // namespace py = pybind11;
 // PYBIND11_DECLARE_HOLDER_TYPE(Stack, std::shared_ptr<Stack>)

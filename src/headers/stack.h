@@ -40,10 +40,11 @@ class Stack
             mID = id;
         }
 
-        Stack(int id, int unitHP,
+        Stack(int id, int type,
+              unsigned int unitHP,
               int size = 1, int speed = 1,
               int prot = 1, int att = 1):
-              mID(id), mUnitHP(unitHP), mSize(size), mProtection(prot),
+              mID(id), mType(type), mUnitHP(unitHP), mSize(size), mProtection(prot),
               mAttack(att), mSpeed(speed)
         {
             mHP = mUnitHP * mSize;
@@ -61,7 +62,9 @@ class Stack
         ~Stack(){}
 
         int getID() {return mID;}
-        int getPlayerType() {return mType;}
+        int getType() {return mType;}
+        unsigned int getHP() {return mHP;}
+        unsigned int getUnitHP() {return mUnitHP;}
         int getSize() {return mSize;}
         int getSpeed() {return mSpeed;}
         int getProtection() {return mProtection;}
@@ -70,7 +73,9 @@ class Stack
         cordsT getCords() {return mCords;}
 
         void setID(int id) {mID = id;}
-        void setPlayerType(int type) {mType = type;}
+        void setType(int type) {mType = type;}
+        void setHP(unsigned int HP) {mHP = HP;}
+        void setUnitHP(unsigned int unitHP) {mUnitHP = unitHP;}
         void setSize(int size) {mSize = size;}
         void setSpeed(int speed) {mSpeed = speed;}
         void setProtection(int prot) {mProtection = prot;}

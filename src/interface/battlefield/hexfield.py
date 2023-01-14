@@ -1,10 +1,10 @@
 import pygame
 import numpy as np
 
-from interface.battlefield.unit import Unit
+from interface.battlefield.unit import UnitInterface
 
 
-class HexField:
+class HexFieldInterface:
     def __init__(self, points, screen, color, cords) -> None:
         self.points = points
         self.screen = screen
@@ -46,10 +46,16 @@ class HexField:
             return True if self.unit.active else False
         return False
 
-    def take_unit(self) -> Unit:
+    def take_unit(self) -> UnitInterface:
         unit = self.unit
         self.unit = None
         return unit
+
+    def get_unit(self) -> UnitInterface:
+        return self.unit
+
+    def set_unit(self, unit: UnitInterface) -> None:
+        self.unit = unit
 
     @staticmethod
     def generate_hexagon(size, x, y, x_pad, y_pad) -> tuple[tuple[float]]:

@@ -1,0 +1,3 @@
+src/*so
+src/__pycache__
+src/interface/*/__pycache__

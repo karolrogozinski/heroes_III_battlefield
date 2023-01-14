@@ -3,13 +3,12 @@
 #include <pybind11/stl.h>
 #include <pybind11/complex.h>
 namespace py = pybind11;
-PYBIND11_DECLARE_HOLDER_TYPE(Hero, std::shared_ptr<Stack>)
 PYBIND11_MODULE(hero, m)
 {
     py::class_<Hero, std::shared_ptr<Hero>>(m, "Hero")
         .def(py::init<>())
         .def(py::init<std::string, bool>())
-        // .def(py::init<std::string, bool, std::vector<SPtr>())
+        // .def(py::init<std::string, bool, std::vector<Stack>())
 
         .def("getName", &Hero::getName)
         .def("getIsPlayer", &Hero::getIsPlayer)
@@ -23,24 +22,24 @@ PYBIND11_MODULE(hero, m)
         .def("AddStack", &Hero::AddStack);
 }
 
-SPtr Hero::GetStack(std::pair<int, int> cords)
+Stack Hero::GetStack(std::pair<int, int> cords)
 {
     for (auto stack: mForces)
     {
-        if (stack->getCords() == cords){
+        if (stack.getCords() == cords){
             return stack;
         }
     }
 }
 
-void Hero::AddStack(SPtr newStackPtr)
+void Hero::AddStack(Stack newStack)
 {
-    for (SPtr stackPtr: mForces)
-    {
-        if (stackPtr->getID() == newStackPtr->getID())
-            stackPtr->AddUnits(newStackPtr);
-            return;
-    }
+    // for (Stack stack: mForces)
+    // {
+    //     if (stack.getID() == newStack.getID())
+    //         stack.AddUnits(newStack);
+    //         return;
+    // }
 
-    mForces.push_back(newStackPtr);
+    mForces.push_back(newStack);
 }

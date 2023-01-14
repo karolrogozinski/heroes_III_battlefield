@@ -23,7 +23,6 @@ class Stack : public std::enable_shared_from_this<Stack>
     cordsT mCords;
 
     public:
-        typedef std::shared_ptr<Stack> SPtr;
         Stack()
         {
             mID = 0;
@@ -84,8 +83,8 @@ class Stack : public std::enable_shared_from_this<Stack>
         void setCords(cordsT cords) {mCords = cords;}
 
         bool BeAttacked(float damage);
-        bool Attack(SPtr stackPtr);
-        void AddUnits(SPtr stackPtr);
+        bool Attack(Stack stack);
+        void AddUnits(Stack stack);
 
         int GenerateStackDamage();
         friend bool operator== (const Stack& lhs, const Stack& rhs);

@@ -4,13 +4,11 @@
 #include <math.h>
 #include "stack.h"
 
-typedef std::shared_ptr<Stack> SPtr;
-
 class Hero
 {
     std::string mName;
     bool mIsPlayer;
-    std::vector<SPtr> mForces;
+    std::vector<Stack> mForces;
     const int mForcesNum = 7;
     // int mLevel;
     // int mExp;
@@ -22,18 +20,18 @@ class Hero
 
         Hero(std::string name, bool isPlayer) : mName(name), mIsPlayer(isPlayer) {}
 
-        Hero(std::string name, bool isPlayer, std::vector<SPtr> forces) :
+        Hero(std::string name, bool isPlayer, std::vector<Stack> forces) :
              mName(name), mIsPlayer(isPlayer), mForces(forces) {}
 
         std::string getName() {return mName;}
         bool getIsPlayer() {return mIsPlayer;}
-        std::vector<SPtr>& getForces() {return mForces;}
+        std::vector<Stack> getForces() {return mForces;}
 
         void setName(std::string sGname) {mName = sGname;}
         void setIsPlayer(bool isPlayer) {mIsPlayer = isPlayer;}
-        void setForces(std::vector<SPtr> forces) {mForces = forces;}
+        void setForces(std::vector<Stack> forces) {mForces = forces;}
 
-        SPtr GetStack(std::pair<int, int> cords);
-        void AddStack(std::shared_ptr<Stack> stack);
+        Stack GetStack(std::pair<int, int> cords);
+        void AddStack(Stack stack);
 
 };

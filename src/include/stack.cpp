@@ -5,8 +5,6 @@
 #include <pybind11/complex.h>
 #include <pybind11/functional.h>
 namespace py = pybind11;
-PYBIND11_DECLARE_HOLDER_TYPE(Stack, std::shared_ptr<Stack>)
-// PYBIND11_DECLARE_HOLER_TYPE(Stack, std::shared_ptr<Unit>)
 PYBIND11_MODULE(stack, m)
 {
     py::class_<Stack, std::shared_ptr<Stack>>(m, "Stack")
@@ -73,12 +71,12 @@ int Stack::GenerateStackDamage()
 }
 
 
-bool Stack::Attack(SPtr stackPtr)
+bool Stack::Attack(Stack stack)
 {
     const float multiplier = 0.05;
     float finalDamage = multiplier * mSize  * GenerateStackDamage() *
-                        (mAttack - stackPtr->getProtection());
-    return stackPtr->BeAttacked(finalDamage);
+                        (mAttack - stack.getProtection());
+    return stack.BeAttacked(finalDamage);
 }
 
 bool operator== (const Stack& lhs, const Stack& rhs)
@@ -89,8 +87,8 @@ bool operator== (const Stack& lhs, const Stack& rhs)
         lhs.mAttack == rhs.mAttack;
 }
 
-void Stack::AddUnits(SPtr stackPtr)
+void Stack::AddUnits(Stack stack)
 {
-    mSize += stackPtr->getSize();
-    mHP += mUnitHP * stackPtr->getSize();
+    mSize += stack.getSize();
+    mHP += mUnitHP * stack.getSize();
 }

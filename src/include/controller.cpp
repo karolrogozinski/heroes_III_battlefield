@@ -1,21 +1,21 @@
-#include "./headers/controller.h"
-// #include <pybind11/pybind11.h>
-// #include <pybind11/complex.h>
-// #include <pybind11/functional.h>
-// #include <pybind11/chrono.h>
-// namespace py = pybind11;
+#include "../headers/controller.h"
+#include <pybind11/pybind11.h>
+#include <pybind11/complex.h>
+#include <pybind11/functional.h>
+#include <pybind11/chrono.h>
+namespace py = pybind11;
 
-// PYBIND11_MODULE(controller, m)
-// {
-//     py::class_<Controller>(m, "Controller")
-//         .def(py::init<>())
-//         .def(py::init<std::string>())
-//         .def("getSettings", &Controller::getSettings)
-//         .def("getPath", &Controller::getPath)
-//         .def("setPath", &Controller::setPath)
-//         .def("UpdateSettings", &Controller::UpdateSettings, py::arg("section"), py::arg("field"), py::arg("value"))
-//         .def("GetSetting", &Controller::GetSetting);
-// }
+PYBIND11_MODULE(controller, m)
+{
+    py::class_<Controller>(m, "Controller")
+        .def(py::init<>())
+        .def(py::init<std::string>())
+        .def("getSettings", &Controller::getSettings)
+        .def("getPath", &Controller::getPath)
+        .def("setPath", &Controller::setPath)
+        .def("UpdateSettings", &Controller::UpdateSettings, py::arg("section"), py::arg("field"), py::arg("value"))
+        .def("GetSetting", &Controller::GetSetting);
+}
 
 void Controller::UpdateSettings(const std::string& section,
                                         const std::string& field,

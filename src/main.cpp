@@ -1,52 +1,47 @@
 #include <iostream>
 // #include "../src/headers/hero.h"
 // #include "../src/headers/stack.h"
-#include "../src/headers/controller.h"
-
+// #include "../src/headers/controller.h"
+#include "../src/headers/battlefield.h"
+typedef std::shared_ptr<Hero> HPtr;
 
 int main()
 {
-    // CCharacter cNoName = CCharacter();
-    // Ability Fury = Ability(6);
-    // std::string name1 = "Nico";
-    // std::string name2 = "Niner";
-    // Unit* Nico = new Unit(name1, 20, 5, 2);
-    // Unit* Niner = new Unit(name2, 10, 6, 3);
-
-    // Stack stack1 = Stack();
-    // stack1.AddUnit(Nico);
-
-    // Stack stack2 = Stack();
-    // stack2.AddUnit(Niner);
-
-    // stack2.Attack(stack1);
-
-    // std::cout << stack1.GetSize() << std::endl;
-    // std::cout << stack1.GetProtection() << std::endl;
-    // std::cout << stack1.GetAttack() << std::endl;
-    // for (UPtr unit: stack1.GetUnits())
+    HPtr hr1 = std::make_shared<Hero>(Hero());
+    HPtr hr2 = std::make_shared<Hero>(Hero());
+    // Hero hr1 = Hero();
+    // Hero hr2 = Hero();
+    Stack stack = Stack(2137);
+    std::vector<UPtr> units;
+    Unit* u1 = new Unit("u1", 21.37, 5, 2, {2, 7});
+    Unit* u2 = new Unit("u2", 73.12, 6, 3, {3, 8});
+    Unit* u3 = new Unit("u3", 32.48, 7, 4, {4, 9});
+    Stack stack2 = Stack();
+    stack2.AddUnit(UPtr(u1));
+    stack2.AddUnit(UPtr(u2));
+    stack2.AddUnit(UPtr(u3));
+    SPtr sPtr = std::make_shared<Stack>(stack2);
+    std::pair<int, int> cords = {1, 2};
+    stack.setCords(cords);
+    for (int i =0; i<7; ++i)
+    {
+        SPtr stack2 = std::make_shared<Stack>(Stack(i));
+        Stack stack = Stack(i);
+        hr1->AddForce(stack);
+    }
+    // hr1->AddStack(sPtr);
+    // hr1->AddStack(sPtr);
+    Battlefield bf = Battlefield(hr1, hr2);
+    // for (auto dupa : bf.getPlayer()->getForces())
     // {
-    //     std::cout << unit->GetHP() << std::endl;
+    //     std::cout<<dupa->getCords().first<<std::endl;
+    //     std::cout<<dupa->getCords().second<<std::endl;
+    //     std::cout<<std::endl;
     // }
-    // std::cout << Niner->GetHP() << std::endl;
-    // Niner->AddAbility(Fury);
-
-    // std::cout << cNiner->GetAbilities()[0]->a<< std::endl;
-
-    // delete Nico;
-    // delete Niner;
-
-    // Controller contr = Controller();
-    // settingsMap settings = contr.GetSettings();
-    // std::cout << settings.size() << std::endl;
-    // for (settingsMap::iterator it = settings.begin(); it != settings.end(); ++it)
-    // {
-    //     std::cout << it->first << std::endl;
-    // }
-
-    // float value;
-    // bool bRv = contr.GetSetting("MUSIC", "VOLUME", value);
-    // std::cout << value << std::endl;
+    // // std::cout<<bf.getPlayer()->getForces()[1]->getCords().second<<std::endl;
+    // std::cout<<bf.getSize()<<std::endl;
+    // std::cout<<bf.GetAllOccupiedCords().size()<<std::endl;
+    // bf.MoveStack
 
     return 0;
 }

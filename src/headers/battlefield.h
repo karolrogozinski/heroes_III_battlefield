@@ -2,7 +2,6 @@
 #include <vector>
 #include <algorithm>
 #include <memory>
-#include "hexNode.h"
 #include "hero.h"
 
 typedef std::shared_ptr<Hero> HPtr;
@@ -30,4 +29,8 @@ class Battlefield
         std::vector<cordsT> GetPossibleMoveCords(
             cordsT cords,
             bool isPlayer); 
+
+    int getSize() {return mSize;}
+    HPtr getPlayer() {return mPlayer;}
+    HPtr getEnemy() {return mEnemy;}
 };

@@ -1,7 +1,7 @@
 #include "./headers/battlefield.h"
 #include <pybind11/pybind11.h>
 namespace py = pybind11;
-
+PYBIND11_DECLARE_HOLDER_TYPE(Stack, std::shared_ptr<Stack>)
 PYBIND11_MODULE(battlefield, m)
 {
     py::class_<Battlefield>(m, "Battlefield")
@@ -12,6 +12,7 @@ PYBIND11_MODULE(battlefield, m)
         .def("GetAllOccupiedCords", &Battlefield::GetAllOccupiedCords)
         .def("GetPossibleMoveCords", &Battlefield::GetPossibleMoveCords);
 }
+
 
 void Battlefield::generateDefUnitsCords(HPtr Hero, bool leftSide)
 {
@@ -28,6 +29,7 @@ void Battlefield::generateDefUnitsCords(HPtr Hero, bool leftSide)
         stackPtr->setCords(cords);
         ++cords.second;
     }
+    return;
 }
 
 Battlefield::Battlefield(HPtr player, HPtr enemy) : mPlayer(player), mEnemy(enemy)
@@ -93,7 +95,23 @@ std::vector<cordsT> Battlefield::GetPossibleMoveCords(
 {   
     SPtr stackPtr;
     stackPtr = isPlayer ? mPlayer->getStack(cords) : mEnemy->getStack(cords);
-    return CalcPossibleMovePoints(stackPtr->getSpeed(), cords);
+    std::vector<cordsT> currCords = CalcPossibleMovePoints(stackPtr->getSpeed(), cords);
+    std::vector<cordsT> occupiedCords = GetAllOccupiedCords();
+    // for (cordsT cords: occupiedCords)
+    // {
+    //     currCords.erase(std::remove_if(currCords.begin(), currCords.end(), ))
+    // }
+    return currCords;
+}
+
+std::vector<cordsT> GetAllUserOccupiedCords(HPtr user)
+{
+    std::vector<cordsT> occupiedCords = std::vector<cordsT>();
+    for (auto stackPtr: user->getForces())
+    {
+        occupiedCords.push_back(stackPtr->getCords());
+    }
+    return occupiedCords;
 }
 
 std::vector<cordsT> Battlefield::GetAllOccupiedCords()
@@ -108,17 +126,6 @@ std::vector<cordsT> Battlefield::GetAllOccupiedCords()
 
     return occupiedPlayerCords;
 }
-
-std::vector<cordsT> GetAllUserOccupiedCords(HPtr user)
-{
-    std::vector<cordsT> occupiedCords = std::vector<cordsT>();
-    for (auto stackPtr: user->getForces())
-    {
-        occupiedCords.push_back(stackPtr->getCords());
-    }
-    return occupiedCords;
-}
-
 
 bool Battlefield::MoveStack(cordsT startCords,
                             cordsT finalCords,

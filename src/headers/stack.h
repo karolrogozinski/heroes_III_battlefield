@@ -18,6 +18,7 @@ class Stack
     std::pair<int, int> mCords;
 
     public:
+        typedef std::shared_ptr<Stack> SPtr;
         Stack()
         {
             mID = 0;
@@ -33,6 +34,13 @@ class Stack
         {
             Stack();
             mID = id;
+        }
+
+        Stack(int id, int size, int prot, int att, int speed):
+            mID(id), mSize(size), mProtection(prot), mAttack(att), mSpeed(speed)
+        {
+            mUnits = {};
+            mCords = std::pair<int, int>();
         }
 
         Stack(const Stack& stack)
@@ -58,14 +66,17 @@ class Stack
         std::pair<int, int> getCords() {return mCords;}
 
         void setCords(std::pair<int, int> cords) {mCords = cords;}
+        void setID(int id) {mID = id;}
+        void setSize(int size) {mSize = size;}
+        void setProtection(int prot) {mProtection = prot;}
 
-        void AddUnit();
+        // void AddUnit();
         void AddUnit(UPtr unit);
-        void AddUnit(Unit* unit);
+        // void AddUnit(Unit* unit);
         void ConcatStack(SPtr stackPtr);
 
         void BeAttacked(float damage);
-        bool Attack(Stack& stack);
+        // bool Attack(Stack& stack);
         bool Attack(std::shared_ptr<Stack> stackPtr);
 
         friend bool operator== (const Stack& lhs, const Stack& rhs);

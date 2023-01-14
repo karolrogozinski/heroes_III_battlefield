@@ -1,37 +1,35 @@
+#pragma once
 #include "./headers/stack.h"
-#include <pybind11/pybind11.h>
-namespace py = pybind11;
 
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+#include <pybind11/complex.h>
+#include <pybind11/functional.h>
+namespace py = pybind11;
+PYBIND11_DECLARE_HOLDER_TYPE(Stack, std::shared_ptr<Stack>)
+// PYBIND11_DECLARE_HOLER_TYPE(Stack, std::shared_ptr<Unit>)
 PYBIND11_MODULE(stack, m)
 {
     py::class_<Stack>(m, "Stack")
         .def(py::init<>())
         .def(py::init<int>())
-        .def(py::init<const Stack&)
+        .def(py::init<int, int, int, int, int>())
         .def("AddUnit", &Stack::AddUnit)
-        .def("AddUnit", &Stack::AddUnit(UPtr))
-        .def("AddUnit", &Stack::AddUnit(Unit*))
-        .def("BeAttacked", &Stack::BeAttacked(float))
-        .def("Attack", &Stack::Attack(Stack&))
-        .def("Attack", &Stack::Attack(std::shared_ptr<Stack>))
-        .def("getUnits", &Stack::getUnits())
-        .def("getSize", &Stack::getSize())
-        .def("getProtection", &Stack::getAttack())
-        .def("getID", &Stack::getID())
-        .def("AddUnit", &Stack::AddUnit())
-        .def("AddUnit", &Stack::AddUnit(UPtr))
-        .def("AddUnit", &Stack::AddUnit(Unit*))
-        .def("BeAttack", &Stack::BeAttacked(float))
-        .def("Attack", &Stack::(Stack&))
-        .def("Attack", &Stack::(std::shared_ptr<Stack>))
+        .def("BeAttacked", &Stack::BeAttacked)
+        .def("Attack", &Stack::Attack)
+        .def("getUnits", &Stack::getUnits)
+        .def("getSize", &Stack::getSize)
+        .def("getProtection", &Stack::getAttack)
+        .def("getID", &Stack::getID)
+        .def("BeAttack", &Stack::BeAttacked);
 }
 
 
-void Stack::AddUnit()
-{
-    mUnits.push_back(UPtr(new Unit()));
-    mSize += 1;
-}
+// void Stack::AddUnit()
+// {
+//     mUnits.push_back(UPtr(new Unit()));
+//     mSize += 1;
+// }
 
 void Stack::AddUnit(UPtr unit)
 {
@@ -44,10 +42,11 @@ void Stack::AddUnit(UPtr unit)
     }
 }
 
-void Stack::AddUnit(Unit* unit)
-{
-    AddUnit(UPtr(unit));
-}
+// void Stack::AddUnit(Unit* unit)
+// {
+//     AddUnit(UPtr(unit));
+//     return;
+// }
 
 void Stack::BeAttacked(float damage)
 {
@@ -75,34 +74,34 @@ void Stack::BeAttacked(float damage)
 }
 
 
-bool Stack::Attack(Stack& stack)
-{
-    std::vector<UPtr> enemyUnits = stack.getUnits();
-    int protDif = mAttack - stack.getProtection();
-    if (protDif < 0)
-    {
-        protDif = 0;
-    }
-    float percAddition = protDif * 0.05;
-    if (percAddition > 3.)
-    {
-        percAddition = 3.;
-    }
-    float sumDamage = 0.;
-    for (UPtr unit: mUnits)
-    {
-        sumDamage += unit->GenerateDamage();
-    }
-    sumDamage += percAddition * sumDamage;
+// bool Stack::Attack(Stack& stack)
+// {
+//     std::vector<UPtr> enemyUnits = stack.getUnits();
+//     int protDif = mAttack - stack.getProtection();
+//     if (protDif < 0)
+//     {
+//         protDif = 0;
+//     }
+//     float percAddition = protDif * 0.05;
+//     if (percAddition > 3.)
+//     {
+//         percAddition = 3.;
+//     }
+//     float sumDamage = 0.;
+//     for (UPtr unit: mUnits)
+//     {
+//         sumDamage += unit->GenerateDamage();
+//     }
+//     sumDamage += percAddition * sumDamage;
 
-    stack.BeAttacked(sumDamage);
+//     stack.BeAttacked(sumDamage);
 
-    if (stack.getUnits().size() == 0)
-    {
-        return true;
-    }
-    return false;
-}
+//     if (stack.getUnits().size() == 0)
+//     {
+//         return true;
+//     }
+//     return false;
+// }
 
 bool Stack::Attack(std::shared_ptr<Stack> stack)
 {
@@ -143,9 +142,9 @@ bool operator== (const Stack& lhs, const Stack& rhs)
         lhs.mAttack == rhs.mAttack;
 }
 
-bool Stack::ConcatStack(std::shared_ptr<Stack> stackPtr)
+void Stack::ConcatStack(SPtr stackPtr)
 {
-    for (auto unitPtr: stackPtr->getUnits)
+    for (auto unitPtr: stackPtr->getUnits())
     {
         mUnits.push_back(unitPtr);
     }

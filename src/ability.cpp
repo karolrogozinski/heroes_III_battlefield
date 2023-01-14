@@ -10,5 +10,5 @@ PYBIND11_MODULE(ability, m)
         .def(py::init<>())
         .def(py::init<int>())
         .def(py::init<const Ability &>())
-        .def("GetAbility", &Ability::GetAbility);
+        .def("getAbility", &Ability::getAbility);
 }

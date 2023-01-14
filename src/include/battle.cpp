@@ -5,16 +5,16 @@ PYBIND11_MODULE(battle, m)
 {
     py::class_<Battle>(m, "Battle")
         .def(py::init<Hero, Hero>())
-        .def("getPlayer", &Battle::getPlayer)
-        .def("getEnemy", &Battle::getEnemy)
-        .def("getSize", &Battle::getSize)
-        .def("GenerateDefUnitsCords", &Battle::GenerateDefUnitsCords)
-        .def("MoveStack", &Battle::MoveStack)
-        .def("CheckBasicAttackPoss", &Battle::CheckBasicAttackPoss)
-        .def("PerformAttack", &Battle::PerformAttack)
-        .def("GetAllOccupiedCords", &Battle::GetAllOccupiedCords)
-        .def("GetPossibleMoveCords", &Battle::GetPossibleMoveCords)
-        .def("GetPossibleAttackCords", &Battle::GetPossibleAttackCords);
+        .def("get_player", &Battle::getPlayer)
+        .def("get_enemy", &Battle::getEnemy)
+        .def("get_size", &Battle::getSize)
+        .def("generate_def_units_cords", &Battle::GenerateDefUnitsCords)
+        .def("move_stack", &Battle::MoveStack)
+        .def("check_basic_attack_poss", &Battle::CheckBasicAttackPoss)
+        .def("perform_attack", &Battle::PerformAttack)
+        .def("get_all_cccupied_cords", &Battle::GetAllOccupiedCords)
+        .def("get_possible_move_cords", &Battle::GetPossibleMoveCords)
+        .def("get_possible_attack_cords", &Battle::GetPossibleAttackCords);
 }
 
 

@@ -8,18 +8,17 @@ PYBIND11_MODULE(hero, m)
     py::class_<Hero, std::shared_ptr<Hero>>(m, "Hero")
         .def(py::init<>())
         .def(py::init<std::string, bool>())
-        // .def(py::init<std::string, bool, std::vector<Stack>())
 
-        .def("getName", &Hero::getName)
-        .def("getIsPlayer", &Hero::getIsPlayer)
-        .def("getForces", &Hero::getForces)
+        .def("get_name", &Hero::getName)
+        .def("get_is_player", &Hero::getIsPlayer)
+        .def("get_forces", &Hero::getForces)
 
-        .def("setName", &Hero::setName)
-        .def("setIsPlayer", &Hero::setIsPlayer)
-        .def("setForces", &Hero::setForces)
+        .def("set_name", &Hero::setName)
+        .def("set_is_player", &Hero::setIsPlayer)
+        .def("set_forces", &Hero::setForces)
 
-        .def("GetStack", &Hero::GetStack)
-        .def("AddStack", &Hero::AddStack);
+        .def("get_stack", &Hero::GetStack)
+        .def("add_stack", &Hero::AddStack);
 }
 
 Stack Hero::GetStack(std::pair<int, int> cords)

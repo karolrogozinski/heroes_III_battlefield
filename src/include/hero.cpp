@@ -3,14 +3,13 @@
 #include <pybind11/stl.h>
 #include <pybind11/complex.h>
 namespace py = pybind11;
-using namespace pybind11::literals;
-
+PYBIND11_DECLARE_HOLDER_TYPE(Hero, std::shared_ptr<Stack>)
 PYBIND11_MODULE(hero, m)
 {
-    py::class_<Hero>(m, "Hero")
+    py::class_<Hero, std::shared_ptr<Hero>>(m, "Hero")
         .def(py::init<>())
         .def(py::init<std::string, bool>())
-        .def(py::init<std::string, bool, std::vector<SPtr>())
+        // .def(py::init<std::string, bool, std::vector<SPtr>())
 
         .def("getName", &Hero::getName)
         .def("getIsPlayer", &Hero::getIsPlayer)

@@ -34,6 +34,6 @@ class Hero
         void setForces(std::vector<SPtr> forces) {mForces = forces;}
 
         SPtr GetStack(std::pair<int, int> cords);
-        void AddStack(SPtr stackPtr);
+        void AddStack(std::shared_ptr<Stack> stack);
 
 };

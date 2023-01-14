@@ -1,4 +1,3 @@
-#pragma once
 #include "../headers/stack.h"
 
 #include <pybind11/pybind11.h>
@@ -10,7 +9,7 @@ PYBIND11_DECLARE_HOLDER_TYPE(Stack, std::shared_ptr<Stack>)
 // PYBIND11_DECLARE_HOLER_TYPE(Stack, std::shared_ptr<Unit>)
 PYBIND11_MODULE(stack, m)
 {
-    py::class_<Stack>(m, "Stack")
+    py::class_<Stack, std::shared_ptr<Stack>>(m, "Stack")
         .def(py::init<>())
         .def(py::init<int>())
         .def(py::init<int, int, unsigned int, int, int, int, int>())

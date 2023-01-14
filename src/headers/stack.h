@@ -4,7 +4,7 @@
 #include <cstdlib>
 
 typedef std::pair<int, int> cordsT;
-class Stack
+class Stack : public std::enable_shared_from_this<Stack>
 {
     int mID;
     // 0 - usual, 1 - shooter, (2- flying)

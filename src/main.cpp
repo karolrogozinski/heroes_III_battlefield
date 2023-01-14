@@ -12,14 +12,7 @@ int main()
     // Hero hr1 = Hero();
     // Hero hr2 = Hero();
     Stack stack = Stack(2137);
-    std::vector<UPtr> units;
-    Unit* u1 = new Unit("u1", 21.37, 5, 2, {2, 7});
-    Unit* u2 = new Unit("u2", 73.12, 6, 3, {3, 8});
-    Unit* u3 = new Unit("u3", 32.48, 7, 4, {4, 9});
     Stack stack2 = Stack();
-    stack2.AddUnit(UPtr(u1));
-    stack2.AddUnit(UPtr(u2));
-    stack2.AddUnit(UPtr(u3));
     SPtr sPtr = std::make_shared<Stack>(stack2);
     std::pair<int, int> cords = {1, 2};
     stack.setCords(cords);

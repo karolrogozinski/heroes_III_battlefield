@@ -1,33 +1,36 @@
 #include <vector>
 #include <memory>
 #include <utility>
+#include <cstdlib>
 
-#include "unit.h"
-
-typedef std::shared_ptr<Unit> UPtr;
-
-class Stack
+typedef std::pair<int, int> cordsT;
+class Stack : public std::enable_shared_from_this<Stack>
 {
     int mID;
-    int mPlayerType;
-    std::vector<UPtr> mUnits;
+    // 0 - usual, 1 - shooter, (2- flying)
+    int mType;
+
+    unsigned int mHP;
+    unsigned int mUnitHP;
+
     int mSize;
+    int mSpeed;
+
     int mProtection;
     int mAttack;
-    int mSpeed;
-    std::pair<int, int> mCords;
+    cordsT mDamage;
+
+    cordsT mCords;
 
     public:
-        typedef std::shared_ptr<Stack> SPtr;
         Stack()
         {
             mID = 0;
-            mUnits = {};
-            mSize = 0;
-            mProtection = 0;
-            mAttack = 0;
-            mSpeed = 2;
-            mCords = std::pair<int, int>();
+            mSize = 1;
+            mProtection = 1;
+            mAttack = 1;
+            mSpeed = 1;
+            mCords = cordsT();
         }
 
         Stack(int id)
@@ -36,48 +39,53 @@ class Stack
             mID = id;
         }
 
-        Stack(int id, int size, int prot, int att, int speed):
-            mID(id), mSize(size), mProtection(prot), mAttack(att), mSpeed(speed)
+        Stack(int id, int type,
+              unsigned int unitHP,
+              int size = 1, int speed = 1,
+              int prot = 1, int att = 1):
+              mID(id), mType(type), mUnitHP(unitHP), mSize(size), mProtection(prot),
+              mAttack(att), mSpeed(speed)
         {
-            mUnits = {};
-            mCords = std::pair<int, int>();
+            mHP = mUnitHP * mSize;
+            mCords = cordsT();
         }
 
         Stack(const Stack& stack)
         {
             mID = stack.mID;
-            mUnits = stack.mUnits;
             mSize = stack.mSize;
             mProtection = stack.mProtection;
             mAttack = stack.mAttack;
         }
 
-        ~Stack()
-        {
-            //TODO
-        }
+        ~Stack(){}
 
-        std::vector<UPtr>& getUnits() {return mUnits;}
+        int getID() {return mID;}
+        int getType() {return mType;}
+        unsigned int getHP() {return mHP;}
+        unsigned int getUnitHP() {return mUnitHP;}
         int getSize() {return mSize;}
+        int getSpeed() {return mSpeed;}
         int getProtection() {return mProtection;}
         int getAttack() {return mAttack;}
-        int getID() {return mID;}
-        int getSpeed() {return mSpeed;}
-        std::pair<int, int> getCords() {return mCords;}
+        cordsT getDamage() {return mDamage;}
+        cordsT getCords() {return mCords;}
 
-        void setCords(std::pair<int, int> cords) {mCords = cords;}
         void setID(int id) {mID = id;}
+        void setType(int type) {mType = type;}
+        void setHP(unsigned int HP) {mHP = HP;}
+        void setUnitHP(unsigned int unitHP) {mUnitHP = unitHP;}
         void setSize(int size) {mSize = size;}
+        void setSpeed(int speed) {mSpeed = speed;}
         void setProtection(int prot) {mProtection = prot;}
+        void setAttack(int attack) {mAttack = attack;}
+        void setDamage(cordsT damage) {mDamage = damage;}
+        void setCords(cordsT cords) {mCords = cords;}
 
-        // void AddUnit();
-        void AddUnit(UPtr unit);
-        // void AddUnit(Unit* unit);
-        void ConcatStack(SPtr stackPtr);
+        bool BeAttacked(float damage);
+        bool Attack(Stack stack);
+        void AddUnits(Stack stack);
 
-        void BeAttacked(float damage);
-        // bool Attack(Stack& stack);
-        bool Attack(std::shared_ptr<Stack> stackPtr);
-
+        int GenerateStackDamage();
         friend bool operator== (const Stack& lhs, const Stack& rhs);
 };

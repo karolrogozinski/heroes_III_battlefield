@@ -72,11 +72,20 @@ std::vector<std::vector<cordsT>> CalcPossibleMovePoints(
 
     for (int i = 1; i <= step; i++)
     {
-        if (i % 2 == 0 && point.second % 2 != 0) {
-            lstep--;
+        if (point.second % 2 == 0){
+            if(i % 2 != 0){
+                lstep--;
+            } else {
+                rstep--;
+            }
         } else {
-            rstep--;
+            if(i % 2 != 0){
+                rstep--;
+            } else {
+                lstep--;
+            }
         }
+
         final_points.push_back(CalcLineCords(lstep, rstep, point, i));
         final_points.push_back(CalcLineCords(lstep, rstep, point, -i));
     }

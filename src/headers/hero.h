@@ -25,13 +25,13 @@ class Hero
 
         std::string getName() {return mName;}
         bool getIsPlayer() {return mIsPlayer;}
-        std::vector<Stack> getForces() {return mForces;}
+        std::vector<Stack>& getForces() {return mForces;}
 
         void setName(std::string sGname) {mName = sGname;}
         void setIsPlayer(bool isPlayer) {mIsPlayer = isPlayer;}
         void setForces(std::vector<Stack> forces) {mForces = forces;}
 
         Stack GetStack(std::pair<int, int> cords);
-        void AddStack(Stack stack);
+        void AddStack(Stack& stack);
 
 };

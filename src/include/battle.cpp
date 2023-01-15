@@ -42,6 +42,30 @@ Battle::Battle(Hero player, Hero enemy) : mPlayer(player), mEnemy(enemy)
     GenerateDefUnitsCords(mEnemy, false);
 }
 
+// std::vector<std::pair<int, int>> middle(int l_step, int r_step, int y_step, std::pair<int, int> pkt) {
+//     std::vector<std::pair<int, int>> res;
+//     for (int i = -l_step; i <= r_step; i++) {
+//         res.push_back(std::make_pair(pkt.first + i, pkt.second + y_step));
+//     }
+//     return res;
+// }
+
+// std::vector<std::pair<int, int>> CalcPossibleMovePoints(int s, std::pair<int, int> pkt) {
+//     std::vector<std::pair<int, int>> rows;
+//     for (int i = 0; i <= s; i++) {
+//         int l = s - i, r = s - i;
+//         if (i % 2 && pkt.second % 2) {
+//             r--;
+//         }
+//         else {
+//             l--;
+//         }
+//         rows.insert(rows.end(), middle(-l, r, i, pkt).begin(), middle(-l, r, i, pkt).end());
+//         rows.insert(rows.end(), middle(-l, r, -i, pkt).begin(), middle(-l, r, -i, pkt).end());
+//     }
+//     return rows;
+// }
+
 std::vector<cordsT> CalcLineCords(
     std::vector<int> lrSteps,
     cordsT point,
@@ -89,10 +113,14 @@ std::vector<cordsT> Battle::GetPossibleMoveCords(
     cordsT cords,
     bool isPlayer)
 {   
+    std::cout<<"dupa0"<<std::endl;
     Stack stack;
     stack = isPlayer ? mPlayer.GetStack(cords) : mEnemy.GetStack(cords);
+    std::cout<<"dupa1"<<std::endl;
+    std::cout<<stack.getSpeed()<<std::endl;
+    std::cout<<"dupa2"<<std::endl;
     std::vector<cordsT> currCords = CalcPossibleMovePoints(stack.getSpeed(), cords);
-    std::vector<cordsT> occupiedCords = GetAllOccupiedCords();
+    // std::vector<cordsT> occupiedCords = GetAllOccupiedCords();
     // for (cordsT cords: occupiedCords)
     // {
     //     currCords.erase(std::remove_if(currCords.begin(), currCords.end(), ))

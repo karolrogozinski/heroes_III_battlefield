@@ -4,14 +4,14 @@
 #include <cstdlib>
 
 typedef std::pair<int, int> cordsT;
-class Stack : public std::enable_shared_from_this<Stack>
+class Stack
 {
     int mID;
     // 0 - usual, 1 - shooter, (2- flying)
     int mType;
 
     unsigned int mHP;
-    unsigned int mUnitHP;
+    int mUnitHP;
 
     int mSize;
     int mSpeed;
@@ -39,8 +39,7 @@ class Stack : public std::enable_shared_from_this<Stack>
             mID = id;
         }
 
-        Stack(int id, int type,
-              unsigned int unitHP,
+        Stack(int id, int type, int unitHP,
               int size = 1, int speed = 1,
               int prot = 1, int att = 1):
               mID(id), mType(type), mUnitHP(unitHP), mSize(size), mProtection(prot),
@@ -48,14 +47,6 @@ class Stack : public std::enable_shared_from_this<Stack>
         {
             mHP = mUnitHP * mSize;
             mCords = cordsT();
-        }
-
-        Stack(const Stack& stack)
-        {
-            mID = stack.mID;
-            mSize = stack.mSize;
-            mProtection = stack.mProtection;
-            mAttack = stack.mAttack;
         }
 
         ~Stack(){}
@@ -83,7 +74,7 @@ class Stack : public std::enable_shared_from_this<Stack>
         void setCords(cordsT cords) {mCords = cords;}
 
         bool BeAttacked(float damage);
-        bool Attack(Stack stack);
+        bool Attack(Stack& stack);
         void AddUnits(Stack stack);
 
         int GenerateStackDamage();

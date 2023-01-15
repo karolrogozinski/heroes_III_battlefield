@@ -1,5 +1,6 @@
 
-#include "../headers/hero.h"
+#include "../headers/battle.h"
+#include "../headers/controller.h"
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -69,4 +70,28 @@ PYBIND11_MODULE(hero, m)
 
         .def("get_stack", &Hero::GetStack)
         .def("add_stack", &Hero::AddStack);
+
+    py::class_<Battle>(m, "Battle")
+        .def(py::init<Hero, Hero>())
+        .def("get_player", &Battle::getPlayer)
+        .def("get_enemy", &Battle::getEnemy)
+        .def("get_size", &Battle::getSize)
+        .def("set_player", &Battle::setPlayer)
+        .def("set_enemy", &Battle::setEnemy)
+        .def("generate_def_units_cords", &Battle::GenerateDefUnitsCords)
+        .def("move_stack", &Battle::MoveStack)
+        .def("check_basic_attack_poss", &Battle::CheckBasicAttackPoss)
+        .def("perform_attack", &Battle::PerformAttack)
+        .def("get_all_cccupied_cords", &Battle::GetAllOccupiedCords)
+        .def("get_possible_move_cords", &Battle::GetPossibleMoveCords)
+        .def("get_possible_attack_cords", &Battle::GetPossibleAttackCords);
+
+    py::class_<Controller>(m, "Controller")
+        .def(py::init<>())
+        .def(py::init<std::string>())
+        .def("get_settings", &Controller::getSettings)
+        .def("get_path", &Controller::getPath)
+        .def("set_path", &Controller::setPath)
+        .def("update_settings", &Controller::UpdateSettings)
+        .def("get_setting", &Controller::GetSetting);
 }

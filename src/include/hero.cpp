@@ -1,4 +1,3 @@
-#pragma once
 #include "../headers/hero.h"
 
 Stack Hero::GetStack(std::pair<int, int> cords)
@@ -9,6 +8,7 @@ Stack Hero::GetStack(std::pair<int, int> cords)
             return stack;
         }
     }
+    return Stack();
 }
 
 void Hero::AddStack(Stack& newStack)

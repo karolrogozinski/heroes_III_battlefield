@@ -1,3 +1,8 @@
 src/*so
 src/__pycache__
 src/interface/*/__pycache__
+.vscode/
+src/a.out
+src/pytest.py
+tests/build
+src/tests/__pycache__

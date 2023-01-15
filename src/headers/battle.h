@@ -10,14 +10,17 @@ class Battle
 {
     Hero mEnemy;
     Hero mPlayer;
-    const int mSize = 11;
+    int mSize = 11;
 
     public:
         Battle(Hero player, Hero enemy);
 
         Hero getPlayer() {return mPlayer;}
         Hero getEnemy() {return mEnemy;}
-        const int getSize() {return mSize;}
+        int getSize() {return mSize;}
+
+        void setPlayer(Hero player) {mPlayer = player;}
+        void setEnemy(Hero enemy) {mEnemy = enemy;}
 
         void GenerateDefUnitsCords(Hero Hero, bool leftSide);
 

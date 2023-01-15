@@ -25,11 +25,9 @@ class Stack
     public:
         Stack()
         {
-            mID = 0;
-            mSize = 1;
-            mProtection = 1;
-            mAttack = 1;
-            mSpeed = 1;
+            mID = 0; mType = 0; mHP = 10;
+            mUnitHP = 1; mSize = 1; mSpeed = 1;
+            mProtection = 1; mAttack = 1; mDamage= {0, 2},
             mCords = cordsT();
         }
 
@@ -42,8 +40,8 @@ class Stack
         Stack(int id, int type, int unitHP,
               int size = 1, int speed = 1,
               int prot = 1, int att = 1):
-              mID(id), mType(type), mUnitHP(unitHP), mSize(size), mProtection(prot),
-              mAttack(att), mSpeed(speed)
+              mID(id), mType(type), mUnitHP(unitHP), mSize(size), mSpeed(speed),
+              mProtection(prot), mAttack(att)
         {
             mHP = mUnitHP * mSize;
             mCords = cordsT();

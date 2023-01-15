@@ -1,4 +1,3 @@
-#pragma once
 #include "../headers/stack.h"
 
 bool Stack::BeAttacked(float damage)

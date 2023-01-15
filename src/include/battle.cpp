@@ -1,22 +1,4 @@
 #include "../headers/battle.h"
-#include <pybind11/pybind11.h>
-namespace py = pybind11;
-PYBIND11_MODULE(battle, m)
-{
-    py::class_<Battle>(m, "Battle")
-        .def(py::init<Hero, Hero>())
-        .def("get_player", &Battle::getPlayer)
-        .def("get_enemy", &Battle::getEnemy)
-        .def("get_size", &Battle::getSize)
-        .def("generate_def_units_cords", &Battle::GenerateDefUnitsCords)
-        .def("move_stack", &Battle::MoveStack)
-        .def("check_basic_attack_poss", &Battle::CheckBasicAttackPoss)
-        .def("perform_attack", &Battle::PerformAttack)
-        .def("get_all_cccupied_cords", &Battle::GetAllOccupiedCords)
-        .def("get_possible_move_cords", &Battle::GetPossibleMoveCords)
-        .def("get_possible_attack_cords", &Battle::GetPossibleAttackCords);
-}
-
 
 void Battle::GenerateDefUnitsCords(Hero hero, bool leftSide)
 {
@@ -36,75 +18,55 @@ void Battle::GenerateDefUnitsCords(Hero hero, bool leftSide)
     return;
 }
 
-Battle::Battle(Hero player, Hero enemy) : mPlayer(player), mEnemy(enemy)
+Battle::Battle(Hero player, Hero enemy) :  mEnemy(enemy), mPlayer(player)
 {
     GenerateDefUnitsCords(mPlayer, true);
     GenerateDefUnitsCords(mEnemy, false);
 }
 
-// std::vector<std::pair<int, int>> middle(int l_step, int r_step, int y_step, std::pair<int, int> pkt) {
-//     std::vector<std::pair<int, int>> res;
-//     for (int i = -l_step; i <= r_step; i++) {
-//         res.push_back(std::make_pair(pkt.first + i, pkt.second + y_step));
-//     }
-//     return res;
-// }
-
-// std::vector<std::pair<int, int>> CalcPossibleMovePoints(int s, std::pair<int, int> pkt) {
-//     std::vector<std::pair<int, int>> rows;
-//     for (int i = 0; i <= s; i++) {
-//         int l = s - i, r = s - i;
-//         if (i % 2 && pkt.second % 2) {
-//             r--;
-//         }
-//         else {
-//             l--;
-//         }
-//         rows.insert(rows.end(), middle(-l, r, i, pkt).begin(), middle(-l, r, i, pkt).end());
-//         rows.insert(rows.end(), middle(-l, r, -i, pkt).begin(), middle(-l, r, -i, pkt).end());
-//     }
-//     return rows;
-// }
-
 std::vector<cordsT> CalcLineCords(
-    std::vector<int> lrSteps,
+    int lstep,
+    int rstep,
     cordsT point,
     int yStep)
 {
     std::vector<cordsT> result;
-    for (int i = -lrSteps[0]; i <= lrSteps[1]; i++) {
-        result.emplace_back(
+    for (int i = -lstep; i <= rstep; i++) {
+        result.push_back(
             std::make_pair(point.first+i, point.second + yStep)
         );
     }
     return result;
 }
 
-std::vector<cordsT> CalcPossibleMovePoints(
+std::vector<std::vector<cordsT>> CalcPossibleMovePoints(
     int step, cordsT point)
 {
-    std::vector<cordsT> final_points;
-    std::vector<int> lrSteps = {step, step};
-    final_points.reserve(final_points.size() + CalcLineCords(lrSteps, point, 0).size());
-    final_points.insert(final_points.end(), CalcLineCords(lrSteps, point, 0).begin(), CalcLineCords(lrSteps, point, 0).end());
-    for (int i = 1; i <= step; i++) {
-        if (i % 2 == 0 && point.second % 2 != 0) {
-            lrSteps[1]--;
+    std::vector<std::vector<cordsT>> final_points;
+    int lstep = step;
+    int rstep = step;
+
+    final_points.push_back(CalcLineCords(lstep, rstep, point, 0));
+
+    for (int i = 1; i <= step; i++)
+    {
+        if (point.second % 2 == 0){
+            if(i % 2 != 0){
+                lstep--;
+            } else {
+                rstep--;
+            }
         } else {
-            lrSteps[0]--;
+            if(i % 2 != 0){
+                rstep--;
+            } else {
+                lstep--;
+            }
         }
 
-        final_points.reserve(final_points.size() + CalcLineCords(lrSteps, point, i).size());
-        final_points.insert(final_points.end(), CalcLineCords(lrSteps, point, i).begin(), CalcLineCords(lrSteps, point, i).end());
-        
-        final_points.reserve(final_points.size() + CalcLineCords(lrSteps, point, -i).size());
-        final_points.insert(final_points.end(), CalcLineCords(lrSteps, point, -i).begin(), CalcLineCords(lrSteps, point, i).end());
+        final_points.push_back(CalcLineCords(lstep, rstep, point, i));
+        final_points.push_back(CalcLineCords(lstep, rstep, point, -i));
     }
-    final_points.erase(std::remove(final_points.begin(), final_points.end(), point), final_points.end());
-    std::sort(final_points.begin(), final_points.end());
-    // we cannot have points foreign to battlefield
-    final_points.erase(std::remove_if(final_points.begin(), final_points.end(), [](const auto& p)
-        { return p.first < 0 || p.first > 11 || p.second < 0 || p.second > 11; }), final_points.end());
 
     return final_points;
 }
@@ -113,18 +75,27 @@ std::vector<cordsT> Battle::GetPossibleMoveCords(
     cordsT cords,
     bool isPlayer)
 {   
-    std::cout<<"dupa0"<<std::endl;
     Stack stack;
     stack = isPlayer ? mPlayer.GetStack(cords) : mEnemy.GetStack(cords);
-    std::cout<<"dupa1"<<std::endl;
-    std::cout<<stack.getSpeed()<<std::endl;
-    std::cout<<"dupa2"<<std::endl;
-    std::vector<cordsT> currCords = CalcPossibleMovePoints(stack.getSpeed(), cords);
-    // std::vector<cordsT> occupiedCords = GetAllOccupiedCords();
-    // for (cordsT cords: occupiedCords)
-    // {
-    //     currCords.erase(std::remove_if(currCords.begin(), currCords.end(), ))
-    // }
+    std::vector<std::vector<cordsT>> tempCords = CalcPossibleMovePoints(stack.getSpeed(), cords);
+    std::vector<cordsT> currCords;
+    for (auto rows: tempCords)
+    {
+        for (auto tuple: rows)
+        {
+            if (tuple.first>=0 && tuple.second>=0 && tuple.first<mSize && tuple.second<mSize)
+                currCords.push_back(tuple);
+        }
+    }
+    std::vector<cordsT> occupiedCords = GetAllOccupiedCords();
+    for (cordsT cords: occupiedCords)
+    {
+        currCords.erase(std::remove_if(currCords.begin(),
+                                       currCords.end(),
+                                       [&](const cordsT currCord) -> bool
+                                            { return currCord == cords; }),
+                        currCords.end());
+    }
     return currCords;
 }
 
@@ -167,11 +138,17 @@ bool Battle::MoveStack(cordsT startCords,
     else
         mEnemy.GetStack(startCords).setCords(finalCords);
     return isPossible;
+    return false;
 }
 
 std::pair<bool, cordsT> Battle::GetPossibleAttackCords(cordsT itsCords, cordsT opponentCords, bool isPlayer)
 {   
-    const std::vector<cordsT> possibleMovsDiffs = {{-1, -1}, {-1, 0}, {0, 1}, {1, 0}, {1, -1}, {0, 1}};
+    std::vector<cordsT> possibleMovsDiffs;
+    if (opponentCords.second % 2 == 0) {
+        possibleMovsDiffs = {{-1, 0}, {0, 1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}};
+    } else {
+        possibleMovsDiffs = {{-1, 0}, {-1, -1}, {0, -1}, {1, 0}, {0, 1}, {-1, 1}};
+    } 
     for (cordsT moveDiff: possibleMovsDiffs)
     {
         if (MoveStack(itsCords,
@@ -179,7 +156,9 @@ std::pair<bool, cordsT> Battle::GetPossibleAttackCords(cordsT itsCords, cordsT o
                       opponentCords.second + moveDiff.second}, 
                       isPlayer))
             {
-                return {true, moveDiff};
+                cordsT retCords = {opponentCords.first + moveDiff.first,
+                                   opponentCords.second + moveDiff.second}; 
+                return {true, retCords};
             }
     }
     return {false, {}};
@@ -207,7 +186,7 @@ std::pair<bool, bool> Battle::PerformAttack(cordsT itsCords, cordsT opponentCord
 {
     if (!CheckBasicAttackPoss(itsCords, opponentCords, isPlayer))
         return {false, false};
-    if (attackingStackType == 1)
+    if (attackingStackType == 0)
     {
         std::pair<bool, cordsT> possibleMoveResponse = GetPossibleAttackCords(itsCords,
                                                                         opponentCords,

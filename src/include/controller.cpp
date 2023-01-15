@@ -1,21 +1,4 @@
 #include "../headers/controller.h"
-#include <pybind11/pybind11.h>
-#include <pybind11/complex.h>
-#include <pybind11/functional.h>
-#include <pybind11/chrono.h>
-namespace py = pybind11;
-
-PYBIND11_MODULE(controller, m)
-{
-    py::class_<Controller>(m, "Controller")
-        .def(py::init<>())
-        .def(py::init<std::string>())
-        .def("get_settings", &Controller::getSettings)
-        .def("get_path", &Controller::getPath)
-        .def("set_path", &Controller::setPath)
-        .def("update_settings", &Controller::UpdateSettings, py::arg("section"), py::arg("field"), py::arg("value"))
-        .def("get_setting", &Controller::GetSetting);
-}
 
 void Controller::UpdateSettings(const std::string& section,
                                         const std::string& field,

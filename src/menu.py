@@ -170,9 +170,9 @@ class MainMenu():
     def play_music(self) -> None:
         music_path = os.path.join(
             self.dirname,
-            self.settings_controller.GetSetting('MUSIC', 'PATH')
+            self.settings_controller.get_setting('MUSIC', 'PATH')
         )
-        music_volume = self.settings_controller.GetSetting('MUSIC', 'VOLUME')
+        music_volume = self.settings_controller.get_setting('MUSIC', 'VOLUME')
 
         pygame.mixer.music.load(music_path)
         pygame.mixer.music.set_volume(float(music_volume))
@@ -206,11 +206,11 @@ class MainMenu():
                        self.p5, self.p6, self.p7]
 
             for idx, size in enumerate(amounts):
-                temp_stack = Stack(idx+1, 0, idx+100, size, 1, 1, 1)
+                temp_stack = Stack(idx+1, 0, idx+100, size, 2, 1, 1)
                 temp_stack_enemy = Stack(idx+8, 0, idx+100,
-                                         size*self.difficulty, 1, 1, 1)
-                player.AddStack(temp_stack)
-                enemy.AddStack(temp_stack_enemy)
+                                         size*self.difficulty, 2, 1, 1)
+                player.add_stack(temp_stack)
+                enemy.add_stack(temp_stack_enemy)
 
             battle_ = Battle(player, enemy)
             self.b_field = BattefieldInterface(battle_)

@@ -1,5 +1,9 @@
 #include "../headers/battle.h"
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+#include <pybind11/complex.h>
+#include <pybind11/functional.h>
+#include <pybind11/chrono.h>
 namespace py = pybind11;
 PYBIND11_MODULE(battle, m)
 {
@@ -43,44 +47,39 @@ Battle::Battle(Hero player, Hero enemy) : mPlayer(player), mEnemy(enemy)
 }
 
 std::vector<cordsT> CalcLineCords(
-    std::vector<int> lrSteps,
+    int lstep,
+    int rstep,
     cordsT point,
     int yStep)
 {
     std::vector<cordsT> result;
-    for (int i = -lrSteps[0]; i <= lrSteps[1]; i++) {
-        result.emplace_back(
+    for (int i = -lstep; i <= rstep; i++) {
+        result.push_back(
             std::make_pair(point.first+i, point.second + yStep)
         );
     }
     return result;
 }
 
-std::vector<cordsT> CalcPossibleMovePoints(
+std::vector<std::vector<cordsT>> CalcPossibleMovePoints(
     int step, cordsT point)
 {
-    std::vector<cordsT> final_points;
-    std::vector<int> lrSteps = {step, step};
-    final_points.reserve(final_points.size() + CalcLineCords(lrSteps, point, 0).size());
-    final_points.insert(final_points.end(), CalcLineCords(lrSteps, point, 0).begin(), CalcLineCords(lrSteps, point, 0).end());
-    for (int i = 1; i <= step; i++) {
-        if (i % 2 == 0 && point.second % 2 != 0) {
-            lrSteps[1]--;
-        } else {
-            lrSteps[0]--;
-        }
+    std::vector<std::vector<cordsT>> final_points;
+    int lstep = step;
+    int rstep = step;
 
-        final_points.reserve(final_points.size() + CalcLineCords(lrSteps, point, i).size());
-        final_points.insert(final_points.end(), CalcLineCords(lrSteps, point, i).begin(), CalcLineCords(lrSteps, point, i).end());
-        
-        final_points.reserve(final_points.size() + CalcLineCords(lrSteps, point, -i).size());
-        final_points.insert(final_points.end(), CalcLineCords(lrSteps, point, -i).begin(), CalcLineCords(lrSteps, point, i).end());
+    final_points.push_back(CalcLineCords(lstep, rstep, point, 0));
+
+    for (int i = 1; i <= step; i++)
+    {
+        if (i % 2 == 0 && point.second % 2 != 0) {
+            lstep--;
+        } else {
+            rstep--;
+        }
+        final_points.push_back(CalcLineCords(lstep, rstep, point, i));
+        final_points.push_back(CalcLineCords(lstep, rstep, point, -i));
     }
-    final_points.erase(std::remove(final_points.begin(), final_points.end(), point), final_points.end());
-    std::sort(final_points.begin(), final_points.end());
-    // we cannot have points foreign to battlefield
-    final_points.erase(std::remove_if(final_points.begin(), final_points.end(), [](const auto& p)
-        { return p.first < 0 || p.first > 11 || p.second < 0 || p.second > 11; }), final_points.end());
 
     return final_points;
 }
@@ -91,8 +90,17 @@ std::vector<cordsT> Battle::GetPossibleMoveCords(
 {   
     Stack stack;
     stack = isPlayer ? mPlayer.GetStack(cords) : mEnemy.GetStack(cords);
-    std::vector<cordsT> currCords = CalcPossibleMovePoints(stack.getSpeed(), cords);
-    std::vector<cordsT> occupiedCords = GetAllOccupiedCords();
+    std::vector<std::vector<cordsT>> tempCords = CalcPossibleMovePoints(stack.getSpeed(), cords);
+    std::vector<cordsT> currCords;
+    for (auto rows: tempCords)
+    {
+        for (auto tuple: rows)
+        {
+            if (tuple.first >= 0 && tuple.second >= 0)
+                currCords.push_back(tuple);
+        }
+    }
+    // std::vector<cordsT> occupiedCords = GetAllOccupiedCords();
     // for (cordsT cords: occupiedCords)
     // {
     //     currCords.erase(std::remove_if(currCords.begin(), currCords.end(), ))
@@ -139,6 +147,7 @@ bool Battle::MoveStack(cordsT startCords,
     else
         mEnemy.GetStack(startCords).setCords(finalCords);
     return isPossible;
+    return false;
 }
 
 std::pair<bool, cordsT> Battle::GetPossibleAttackCords(cordsT itsCords, cordsT opponentCords, bool isPlayer)

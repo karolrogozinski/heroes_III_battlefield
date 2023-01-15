@@ -27,6 +27,9 @@ class BattefieldInterface:
         self.battle = battle
         self.player = None
         self.enemy = None
+        self.start_cords = [(0, 0), (10, 0), (0, 2), (10, 2), (0, 4), (10, 4),
+                            (0, 5), (10, 5), (0, 6), (10, 6), (0, 8), (10, 8),
+                            (0, 10), (10, 10)]
 
     def create_battlefield(self, color: tuple[int], size: int) -> None:
         self.battlefield = []
@@ -37,8 +40,9 @@ class BattefieldInterface:
                 else:
                     pos = 332
                 hf = HexFieldInterface(
-                    points=HexFieldInterface.generate_hexagon(33, x,
-                                                              y, pos, 100),
+                    points=HexFieldInterface.generate_hexagon(
+                        33, x, y, pos, 100
+                    ),
                     screen=self.screen,
                     color=color,
                     cords=(x, y)
@@ -78,12 +82,31 @@ class BattefieldInterface:
                 return hf
 
     def set_players(self) -> None:
-        self.player = self.battle.getPlayer()
-        self.enemy = self.battle.getEnemy()
+        self.player = self.battle.get_player()
+        self.enemy = self.battle.get_enemy()
 
     def create_units(self) -> None:
-        for stack in self.player.getFroces():
-            ...
+        for (stack, enemy) in zip(self.player.get_forces(),
+                                  self.enemy.get_forces()):
+            if stack.get_size() > 0:
+                tmp_unit = UnitInterface(stack.get_id(), stack.get_size(),
+                                         stack.get_speed(), 1)
+                self.units.append(tmp_unit)
+
+            if enemy.get_size() > 0:
+                tmp_unit = UnitInterface(enemy.get_id(), enemy.get_size(),
+                                         enemy.get_speed(), 1, True)
+                self.units.append(tmp_unit)
+
+    def set_units(self) -> None:
+        for idx, unit in enumerate(self.units):
+            self.find_by_cords(self.start_cords[idx]).set_unit(unit)
+
+    def set_start_cords(self) -> None:
+        for idx, (stack, enemy) in enumerate(zip(self.player.get_forces(),
+                                                 self.enemy.get_forces())):
+            stack.set_cords(self.start_cords[2*idx])
+            enemy.set_cords(self.start_cords[2*idx+1])
 
     def sort_units(self) -> None:
         n = len(self.units)
@@ -156,12 +179,17 @@ class BattefieldInterface:
         self.create_battlefield(color=(0, 0, 0, 255), size=11)
         self.sort_battlefield()
         self.create_units()
+        self.set_units()
+        self.set_start_cords()
         self.sort_units()
 
         mouse_x, mouse_y = 0, 0
         possible_moves = [(random.randint(0, 10),
                            random.randint(0, 10)) for i in range(30)]
         self.units[0].active = True
+        self.set_available_moves(self.battle.get_possible_move_cords(
+                self.get_active().get_cords(), True
+            ))
 
         while self.RUN_BF:
             moved = 0
@@ -184,7 +212,9 @@ class BattefieldInterface:
             if polygon and not mouse_clicked:
                 self.change_color((150, 150, 0, 50), polygon)
 
-            self.set_available_moves(possible_moves)
+            self.set_available_moves(self.battle.get_possible_move_cords(
+                self.get_active().get_cords(), True))
+
             self.change_color((0, 150, 0, 175), self.get_active())
             self.move_enemy(possible_moves)
 

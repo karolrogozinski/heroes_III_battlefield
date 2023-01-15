@@ -9,7 +9,7 @@ class Hero
     std::string mName;
     bool mIsPlayer;
     std::vector<Stack> mForces;
-    const int mForcesNum = 7;
+    int mForcesNum = 7;
     // int mLevel;
     // int mExp;
     // int mLvlExpLimit;

@@ -1,4 +1,4 @@
-from hero import Stack
+from ..bindings import Stack
 
 def test_always_passes():
     assert True

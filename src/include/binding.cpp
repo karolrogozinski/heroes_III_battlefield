@@ -6,11 +6,10 @@
 #include <pybind11/stl.h>
 #include <pybind11/complex.h>
 #include <pybind11/functional.h>
-PYBIND11_MAKE_OPAQUE(std::vector<Stack>);
 namespace py = pybind11;
 
 
-PYBIND11_MODULE(hero, m)
+PYBIND11_MODULE(bindings, m)
 {
     py::class_<Stack>(m, "Stack")
         .def(py::init<>())

@@ -1,4 +1,4 @@
-from hero import Hero, Stack
+from ..bindings import Hero, Stack
 
 def test_def_constructor():
     hero = Hero()

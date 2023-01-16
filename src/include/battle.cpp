@@ -209,11 +209,12 @@ std::vector<bool> Battle::PerformAttack(cordsT itsCords, cordsT opponentCords,
             attackedDead = mEnemy.GetStack(possibleMoveResponse.second).Attack(mPlayer.GetStack(opponentCords));
 
         if (!attackedDead)
+        {
             if (isPlayer)
                 attackingDead = mEnemy.GetStack(opponentCords).Attack(mPlayer.GetStack(possibleMoveResponse.second));
             else
                 attackingDead = mPlayer.GetStack(opponentCords).Attack(mEnemy.GetStack(possibleMoveResponse.second));
-
+        }
         return {true, attackedDead, attackingDead};
     }
     if (isPlayer)

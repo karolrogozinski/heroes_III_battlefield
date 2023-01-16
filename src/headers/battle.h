@@ -22,9 +22,6 @@ class Battle
         void setPlayer(Hero player) {mPlayer = player;}
         void setEnemy(Hero enemy) {mEnemy = enemy;}
 
-        void setPlayer(Hero player) {mPlayer = player;}
-        void setEnemy(Hero enemy) {mEnemy = enemy;}
-
         void GenerateDefUnitsCords(Hero Hero, bool leftSide);
 
         bool MoveStack(cordsT startCords, cordsT finalCords, bool isPlayer);

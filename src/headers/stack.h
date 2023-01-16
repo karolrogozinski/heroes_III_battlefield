@@ -13,21 +13,19 @@ class Stack
     unsigned int mHP;
     int mUnitHP;
 
+    int mSpeed;
     int mSize;
-    
-
     int mProtection;
     int mAttack;
     cordsT mDamage;
-
     cordsT mCords;
 
     public:
-        int mSpeed;
+        
         Stack()
         {
             mID = 0; mType = 0; mHP = 10;
-            mUnitHP = 1; mSize = 1; mSpeed = 1;
+            mUnitHP = 1; mSpeed = 1; mSize = 1; 
             mProtection = 1; mAttack = 1; mDamage= {0, 2},
             mCords = cordsT();
         }
@@ -39,12 +37,12 @@ class Stack
         }
 
         Stack(int id, int type, int unitHP,
-              int size = 1, int speed = 1,
-              int prot = 1, int att = 1):
-              mID(id), mType(type), mSpeed(speed), mUnitHP(unitHP), mSize(size), mProtection(prot),
-              mAttack(att)
+              int size, int speed,
+              int prot, int att):
+              mID(id), mType(type), mHP(unitHP * size), mUnitHP(unitHP),
+              mSpeed(speed), mSize(size), mProtection(prot), mAttack(att)
         {
-            mHP = mUnitHP * mSize;
+            mDamage = {0, 2};
             mCords = cordsT();
         }
 

@@ -9,7 +9,7 @@ class Hero
     std::string mName;
     bool mIsPlayer;
     std::vector<Stack> mForces;
-    const int mForcesNum = 7;
+    int mForcesNum = 7;
     // int mLevel;
     // int mExp;
     // int mLvlExpLimit;
@@ -31,7 +31,7 @@ class Hero
         void setIsPlayer(bool isPlayer) {mIsPlayer = isPlayer;}
         void setForces(std::vector<Stack> forces) {mForces = forces;}
 
-        Stack GetStack(std::pair<int, int> cords);
+        Stack& GetStack(std::pair<int, int> cords);
         void AddStack(Stack stack);
 
 };

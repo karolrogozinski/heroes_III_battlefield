@@ -45,7 +45,7 @@ class HexFieldInterface:
 
     def is_active(self) -> bool:
         if self.unit:
-            return True if self.unit.active else False
+            return True if self.unit.is_active() else False
         return False
 
     def take_unit(self) -> UnitInterface:
@@ -55,6 +55,9 @@ class HexFieldInterface:
 
     def get_unit(self) -> UnitInterface:
         return self.unit
+
+    def get_cords(self) -> tuple[int]:
+        return self.cords
 
     def set_unit(self, unit: UnitInterface) -> None:
         self.unit = unit

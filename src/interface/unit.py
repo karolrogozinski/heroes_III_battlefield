@@ -50,3 +50,9 @@ class UnitInterface:
 
     def is_enemy(self) -> bool:
         return self.enemy
+
+    def is_alive(self) -> bool:
+        return self.alive
+
+    def get_id(self) -> bool:
+        return self.id

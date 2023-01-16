@@ -14,7 +14,7 @@ class Stack : public std::enable_shared_from_this<Stack>
     unsigned int mUnitHP;
 
     int mSize;
-    int mSpeed;
+    
 
     int mProtection;
     int mAttack;
@@ -23,6 +23,7 @@ class Stack : public std::enable_shared_from_this<Stack>
     cordsT mCords;
 
     public:
+        int mSpeed;
         Stack()
         {
             mID = 0;
@@ -43,20 +44,20 @@ class Stack : public std::enable_shared_from_this<Stack>
               unsigned int unitHP,
               int size = 1, int speed = 1,
               int prot = 1, int att = 1):
-              mID(id), mType(type), mUnitHP(unitHP), mSize(size), mProtection(prot),
-              mAttack(att), mSpeed(speed)
+              mID(id), mType(type), mSpeed(speed), mUnitHP(unitHP), mSize(size), mProtection(prot),
+              mAttack(att)
         {
             mHP = mUnitHP * mSize;
             mCords = cordsT();
         }
 
-        Stack(const Stack& stack)
-        {
-            mID = stack.mID;
-            mSize = stack.mSize;
-            mProtection = stack.mProtection;
-            mAttack = stack.mAttack;
-        }
+        // Stack(const Stack& stack)
+        // {
+        //     mID = stack.mID;
+        //     mSize = stack.mSize;
+        //     mProtection = stack.mProtection;
+        //     mAttack = stack.mAttack;
+        // }
 
         ~Stack(){}
 
@@ -83,7 +84,7 @@ class Stack : public std::enable_shared_from_this<Stack>
         void setCords(cordsT cords) {mCords = cords;}
 
         bool BeAttacked(float damage);
-        bool Attack(Stack stack);
+        bool Attack(Stack& stack);
         void AddUnits(Stack stack);
 
         int GenerateStackDamage();

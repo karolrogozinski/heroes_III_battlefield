@@ -5,7 +5,7 @@ import pygame
 from .hexfield import HexFieldInterface
 from .unit import UnitInterface
 
-from ..battle import Battle
+from ..bindings import Battle
 
 
 class BattefieldInterface:

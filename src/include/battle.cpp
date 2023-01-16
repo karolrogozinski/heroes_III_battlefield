@@ -209,13 +209,15 @@ bool Battle::CheckBasicAttackPoss(cordsT itsCords, cordsT opponentCords, bool is
 }
 
 
-std::pair<bool, bool> Battle::PerformAttack(cordsT itsCords, cordsT opponentCords,
+std::vector<bool> Battle::PerformAttack(cordsT itsCords, cordsT opponentCords,
                                             bool isPlayer)
 {
     if (!CheckBasicAttackPoss(itsCords, opponentCords, isPlayer))
-        return {false, false};
+        return {false, false, false};
     Hero tempHero = isPlayer ? mPlayer : mEnemy;
     int attackingType = tempHero.GetStack(itsCords).getType();
+    bool attackedDead;
+    bool attackingDead = false;
     if (attackingType == 0)
     {
         std::pair<bool, cordsT> possibleMoveResponse = GetPossibleAttackCords(itsCords,
@@ -223,9 +225,23 @@ std::pair<bool, bool> Battle::PerformAttack(cordsT itsCords, cordsT opponentCord
                                                                         isPlayer);
         bool moveHappened = MoveStack(itsCords, possibleMoveResponse.second, isPlayer);
         if (!possibleMoveResponse.first || !moveHappened)
-            return {false, false};
+            return {false, false, false};
+
+        if (isPlayer)
+            attackedDead = mPlayer.GetStack(possibleMoveResponse.second).Attack(mEnemy.GetStack(opponentCords));
+        else
+            attackedDead = mEnemy.GetStack(possibleMoveResponse.second).Attack(mPlayer.GetStack(opponentCords));
+
+        if (!attackedDead)
+            if (isPlayer)
+                attackingDead = mEnemy.GetStack(opponentCords).Attack(mPlayer.GetStack(possibleMoveResponse.second));
+            else
+                attackingDead = mPlayer.GetStack(opponentCords).Attack(mEnemy.GetStack(possibleMoveResponse.second));
+
+        return {true, attackedDead, attackingDead};
     }
-    Stack attackingStack = isPlayer ? mPlayer.GetStack(itsCords) : mEnemy.GetStack(itsCords);
-    Stack attackedStack = isPlayer ? mEnemy.GetStack(opponentCords) : mPlayer.GetStack(opponentCords);
-    return {true, attackingStack.Attack(attackedStack)};
+    if (isPlayer)
+        return {true, mPlayer.GetStack(itsCords).Attack(mEnemy.GetStack(opponentCords)), false};
+    else
+        return {true, mEnemy.GetStack(itsCords).Attack(mPlayer.GetStack(opponentCords)), false};
 }

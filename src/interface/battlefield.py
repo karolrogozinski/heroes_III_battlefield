@@ -249,6 +249,23 @@ class BattefieldInterface:
         pygame.mixer.music.load(self.music_path)
         pygame.mixer.music.play(-1)
 
+    def check_end(self) -> int:
+        player_alive = 0
+        enemy_alive = 0
+
+        for unit in self.units:
+            if unit.is_alive():
+                if unit.is_enemy():
+                    enemy_alive += 1
+                else:
+                    player_alive += 1
+
+        if not player_alive:
+            return 2
+        if not enemy_alive:
+            return 1
+        return 0
+
     def run(self) -> None:
         self.play_music()
         self.create_bg()
@@ -348,12 +365,31 @@ class BattefieldInterface:
                                 new_cords,
                                 polygon.get_cords()
                             )
+                        if attack[1]:
+                            corpse = self.find_by_cords(
+                                polygon.get_cords()).take_unit()
+                            corpse.alive = False
+                            self.find_by_cords(
+                                polygon.get_cords()).corpse = corpse
+
+                        if attack[2]:
+                            corpse = self.find_by_cords(a_cords[1]).take_unit()
+                            corpse.alive = False
+                            self.find_by_cords(a_cords[1]).corpse = corpse
 
             if polygon and not mouse_clicked and\
                polygon.get_cords() in possible_moves:
                 self.change_color((0, 150, 0, 50), polygon)
 
             self.draw_battlefield()
+
+            end_cond = self.check_end()
+            if end_cond == 1:
+                print('You won!')
+                break
+            if end_cond == 2:
+                print('You lose!')
+                break
 
             if moved:
                 self.next_unit()

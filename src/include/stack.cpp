@@ -1,5 +1,5 @@
 #include "../headers/stack.h"
-
+#include <iostream>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/complex.h>
@@ -32,6 +32,7 @@ PYBIND11_MODULE(stack, m)
         .def("set_protection", &Stack::setProtection)
         .def("set_attack", &Stack::setAttack)
         .def("set_cords", &Stack::setCords)
+        .def("set_damage", &Stack::setDamage)
         
         .def("be_attacked", &Stack::BeAttacked)
         .def("attack", &Stack::Attack)
@@ -54,7 +55,6 @@ bool Stack::BeAttacked(float damage)
     }
     mHP -= recdDamage;
     mSize -= deadUnits;
-
     return mSize <= 0 ? true : false;
 }
 
@@ -71,10 +71,10 @@ int Stack::GenerateStackDamage()
 }
 
 
-bool Stack::Attack(Stack stack)
+bool Stack::Attack(Stack& stack)
 {
     const float multiplier = 0.05;
-    float finalDamage = multiplier * mSize  * GenerateStackDamage() *
+    float finalDamage =  mSize  * GenerateStackDamage() + multiplier *
                         (mAttack - stack.getProtection());
     return stack.BeAttacked(finalDamage);
 }

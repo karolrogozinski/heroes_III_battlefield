@@ -84,7 +84,7 @@ class Stack : public std::enable_shared_from_this<Stack>
         void setCords(cordsT cords) {mCords = cords;}
 
         bool BeAttacked(float damage);
-        bool Attack(Stack stack);
+        bool Attack(Stack& stack);
         void AddUnits(Stack stack);
 
         int GenerateStackDamage();

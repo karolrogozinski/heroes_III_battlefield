@@ -26,7 +26,7 @@ class Battle
 
         bool MoveStack(cordsT startCords, cordsT finalCords, bool isPlayer);
         bool CheckBasicAttackPoss(cordsT itsCords, cordsT opponentCords, bool isPlayer);
-        std::pair<bool, bool> PerformAttack(cordsT itsCords, cordsT opponentCords,
+        std::vector<bool> PerformAttack(cordsT itsCords, cordsT opponentCords,
                                             bool isPlayer);
 
         std::vector<cordsT> GetAllOccupiedCords();

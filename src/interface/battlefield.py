@@ -148,12 +148,16 @@ class BattefieldInterface:
             if hf.cords in cords:
                 self.change_color((0, 0, 0, self.transparency), hf)
 
-    def set_attack_moves(self, cords: list[tuple[int]]) -> None:
+    def set_attack_moves(self, cords: tuple[int], shooter: bool) -> tuple[int]:
+        dest_cords = self.get_active().get_cords()
         for hf in self.battlefield:
-            if hf.cords in cords:
-                self.change_color((150, 0, 0, self.transparency), hf)
+            if not shooter:
+                if hf.cords == cords:
+                    dest_cords = hf.cords
+                    self.change_color((150, 0, 0, self.transparency), hf)
             if hf.cords == self.get_active().get_cords():
                 self.change_color((150, 0, 0, self.transparency), hf)
+        return dest_cords
 
     def change_color(self, color: tuple[int], hf: HexFieldInterface) -> None:
         hf.color = color
@@ -228,6 +232,19 @@ class BattefieldInterface:
                     return True
         return False
 
+    def update_stacks(self, hex_attack, hex_def) -> None:
+        attacker = self.battle.get_player().get_stack(hex_attack)
+        defender = self.battle.get_enemy().get_stack(hex_def)
+
+        a_unit = self.find_by_cords(self.get_active().get_cords()).take_unit()
+        a_unit.stack_size = attacker.get_size()
+        self.find_by_cords(hex_attack).set_unit(a_unit)
+        self.find_by_cords(hex_attack).active = True
+
+        d_unit = self.find_by_cords(hex_def).take_unit()
+        d_unit.stack_size = defender.get_size()
+        self.find_by_cords(defender.get_cords()).set_unit(d_unit)
+
     def play_music(self) -> None:
         pygame.mixer.music.load(self.music_path)
         pygame.mixer.music.play(-1)
@@ -279,33 +296,69 @@ class BattefieldInterface:
 
             self.change_color((0, 150, 0, 175), self.get_active())
 
-            if polygon and not mouse_clicked and\
-               self.isin_neighbourhood(polygon, possible_moves):
-                print('chuj')
-                print(polygon.get_cords())
+            if polygon and not mouse_clicked:
                 if polygon.get_unit():
-                    print('chuj2')
                     if polygon.get_unit().is_enemy():
-                        attack_cords = self.battle.get_possible_attack_cords(
+                        shooter = self.battle.get_player().get_stack(
+                                        self.get_active().get_cords()
+                                        ).get_type()
+                        if self.isin_neighbourhood(polygon, possible_moves)\
+                           and not shooter:
+                            a_cords = self.battle.get_possible_attack_cords(
+                                self.get_active().get_cords(),
+                                polygon.get_cords(),
+                                True
+                            )
+                            self.set_attack_moves(
+                                a_cords[1],
+                                self.battle.get_player().get_stack(
+                                    self.get_active().get_cords()).get_type()
+                            )
+
+                        if shooter:
+                            self.set_attack_moves((), shooter)
+                        self.change_color((150, 0, 0, 50), polygon)
+
+            if polygon and mouse_clicked:
+                if polygon.cords in possible_moves:
+                    moved = 1
+                    self.move_unit(polygon.cords)
+                elif polygon.get_unit():
+                    if polygon.get_unit().is_enemy():
+                        a_cords = self.battle.get_possible_attack_cords(
+                                self.get_active().get_cords(),
+                                polygon.get_cords(),
+                                True
+                            )
+                        new_cords = self.set_attack_moves(
+                                a_cords[1],
+                                self.battle.get_player().get_stack(
+                                    self.get_active().get_cords()).get_type()
+                            )
+
+                        attack = self.battle.perform_attack(
                             self.get_active().get_cords(),
                             polygon.get_cords(),
                             True
                         )
-                        self.set_attack_moves([attack_cords[1]])
-                        self.change_color((150, 0, 0, 50), polygon)
-                else:
-                    self.change_color((0, 150, 0, 50), polygon)
+                        if attack[0]:
+                            moved = 1
 
-            if polygon and mouse_clicked and polygon.cords in possible_moves:
-                moved = 1
-                self.move_unit(polygon.cords)
+                            self.update_stacks(
+                                new_cords,
+                                polygon.get_cords()
+                            )
+
+            if polygon and not mouse_clicked and\
+               polygon.get_cords() in possible_moves:
+                self.change_color((0, 150, 0, 50), polygon)
 
             self.draw_battlefield()
+
             if moved:
                 self.next_unit()
                 is_player = False if self.get_active().get_unit().is_enemy()\
                                   else True
-
                 possible_moves = self.battle.get_possible_move_cords(
                     self.get_active().get_cords(), is_player)
 

@@ -206,8 +206,14 @@ class MainMenu():
                        self.p5, self.p6, self.p7]
 
             for idx, size in enumerate(amounts):
-                temp_stack = Stack(idx+1, 0, idx+100, size, idx+1, 1, 1)
-                temp_stack_enemy = Stack(idx+8, 0, idx+100,
+                shooter = 0
+                if idx+1 in (2, 5):
+                    shooter = 1
+                temp_stack = Stack(idx+1, shooter, idx+100, size, idx+1, 1, 1)
+                shooter = 0
+                if idx+1 == 2:
+                    shooter = 1
+                temp_stack_enemy = Stack(idx+8, shooter, idx+10,
                                          size*self.difficulty, idx+1, 1, 1)
                 player.add_stack(temp_stack)
                 enemy.add_stack(temp_stack_enemy)

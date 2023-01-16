@@ -21,14 +21,16 @@ PYBIND11_MODULE(hero, m)
         .def("add_stack", &Hero::AddStack);
 }
 
-Stack Hero::GetStack(std::pair<int, int> cords)
+Stack& Hero::GetStack(std::pair<int, int> cords)
 {
-    for (auto stack: mForces)
+    for (Stack& stack: mForces)
     {
         if (stack.getCords() == cords){
             return stack;
         }
     }
+    Stack failStack = Stack();
+    return failStack;
 }
 
 void Hero::AddStack(Stack newStack)

@@ -11,3 +11,4 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     python3.10 ./src/run.py
 fi
     
+

@@ -14,14 +14,8 @@ bool Stack::BeAttacked(float damage)
         }
     }
     mHP -= recdDamage;
-    if (deadUnits > mSize)
-    {
-        mSize = 0;
-    } else {
-        mSize -= deadUnits;
-    }
-
-    return mSize == 0;
+    mSize -= deadUnits;
+    return mSize <= 0 ? true : false;
 }
 
 int GetPseudoRandom(cordsT range)
@@ -40,10 +34,8 @@ int Stack::GenerateStackDamage()
 bool Stack::Attack(Stack& stack)
 {
     const float multiplier = 0.05;
-    float finalDamage = mSize  * GenerateStackDamage() +
-                        multiplier * (mAttack - stack.getProtection());
-    if (finalDamage < 0)
-        return false;
+    float finalDamage =  mSize  * GenerateStackDamage() + multiplier *
+                        (mAttack - stack.getProtection());
     return stack.BeAttacked(finalDamage);
 }
 

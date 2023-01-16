@@ -14,7 +14,7 @@ class Stack
     int mUnitHP;
 
     int mSize;
-    int mSpeed;
+    
 
     int mProtection;
     int mAttack;
@@ -23,6 +23,7 @@ class Stack
     cordsT mCords;
 
     public:
+        int mSpeed;
         Stack()
         {
             mID = 0; mType = 0; mHP = 10;
@@ -40,8 +41,8 @@ class Stack
         Stack(int id, int type, int unitHP,
               int size = 1, int speed = 1,
               int prot = 1, int att = 1):
-              mID(id), mType(type), mUnitHP(unitHP), mSize(size), mSpeed(speed),
-              mProtection(prot), mAttack(att)
+              mID(id), mType(type), mSpeed(speed), mUnitHP(unitHP), mSize(size), mProtection(prot),
+              mAttack(att)
         {
             mHP = mUnitHP * mSize;
             mCords = cordsT();

@@ -127,18 +127,21 @@ bool Battle::MoveStack(cordsT startCords,
                             bool isPlayer)
 {
     std::vector<cordsT> moveCords = GetPossibleMoveCords(startCords, isPlayer);
-
     bool isPossible =  std::find(moveCords.begin(), moveCords.end(), finalCords) != moveCords.end();
-    
     if (!isPossible)
         return isPossible;
     
-    if (isPlayer)
-    {
+    if (isPlayer) {
         mPlayer.GetStack(startCords).setCords(finalCords);
-    }
-    else
+    } else
         mEnemy.GetStack(startCords).setCords(finalCords);
+    return isPossible;
+}
+
+bool Battle::CheckMovePossibility(cordsT itsCords, cordsT finalCords, bool isPlayer)
+{
+    std::vector<cordsT> moveCords = GetPossibleMoveCords(itsCords, isPlayer);
+    bool isPossible =  std::find(moveCords.begin(), moveCords.end(), finalCords) != moveCords.end();
     return isPossible;
 }
 
@@ -152,7 +155,7 @@ std::pair<bool, cordsT> Battle::GetPossibleAttackCords(cordsT itsCords, cordsT o
     } 
     for (cordsT moveDiff: possibleMovsDiffs)
     {
-        if (MoveStack(itsCords,
+        if (CheckMovePossibility(itsCords,
                      {opponentCords.first + moveDiff.first,
                       opponentCords.second + moveDiff.second}, 
                       isPlayer))
@@ -182,23 +185,39 @@ bool Battle::CheckBasicAttackPoss(cordsT itsCords, cordsT opponentCords, bool is
 }
 
 
-std::pair<bool, bool> Battle::PerformAttack(cordsT itsCords, cordsT opponentCords,
-                                            bool isPlayer, int attackingStackType)
+std::vector<bool> Battle::PerformAttack(cordsT itsCords, cordsT opponentCords,
+                                            bool isPlayer)
 {
     if (!CheckBasicAttackPoss(itsCords, opponentCords, isPlayer))
-        return {false, false};
-    if (attackingStackType == 0)
+        return {false, false, false};
+    Hero tempHero = isPlayer ? mPlayer : mEnemy;
+    int attackingType = tempHero.GetStack(itsCords).getType();
+    bool attackedDead;
+    bool attackingDead = false;
+    if (attackingType == 0)
     {
         std::pair<bool, cordsT> possibleMoveResponse = GetPossibleAttackCords(itsCords,
                                                                         opponentCords,
                                                                         isPlayer);
         bool moveHappened = MoveStack(itsCords, possibleMoveResponse.second, isPlayer);
         if (!possibleMoveResponse.first || !moveHappened)
-            return {false, false};
-    }
+            return {false, false, false};
 
-    Stack attackingStack = isPlayer ? mPlayer.GetStack(itsCords) : mEnemy.GetStack(itsCords);
-    Stack attackedStack = isPlayer ? mEnemy.GetStack(itsCords) : mPlayer.GetStack(itsCords);
-    
-    return {true, attackedStack.Attack(attackedStack)};
+        if (isPlayer)
+            attackedDead = mPlayer.GetStack(possibleMoveResponse.second).Attack(mEnemy.GetStack(opponentCords));
+        else
+            attackedDead = mEnemy.GetStack(possibleMoveResponse.second).Attack(mPlayer.GetStack(opponentCords));
+
+        if (!attackedDead)
+            if (isPlayer)
+                attackingDead = mEnemy.GetStack(opponentCords).Attack(mPlayer.GetStack(possibleMoveResponse.second));
+            else
+                attackingDead = mPlayer.GetStack(opponentCords).Attack(mEnemy.GetStack(possibleMoveResponse.second));
+
+        return {true, attackedDead, attackingDead};
+    }
+    if (isPlayer)
+        return {true, mPlayer.GetStack(itsCords).Attack(mEnemy.GetStack(opponentCords)), false};
+    else
+        return {true, mEnemy.GetStack(itsCords).Attack(mPlayer.GetStack(opponentCords)), false};
 }

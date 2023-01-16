@@ -134,11 +134,12 @@ bool Battle::MoveStack(cordsT startCords,
         return isPossible;
     
     if (isPlayer)
+    {
         mPlayer.GetStack(startCords).setCords(finalCords);
+    }
     else
         mEnemy.GetStack(startCords).setCords(finalCords);
     return isPossible;
-    return false;
 }
 
 std::pair<bool, cordsT> Battle::GetPossibleAttackCords(cordsT itsCords, cordsT opponentCords, bool isPlayer)

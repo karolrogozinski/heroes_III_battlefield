@@ -1,21 +1,23 @@
 #include <iostream>
-#include "headers/hero.h"
-// #include "../src/headers/controller.h"
+#include "headers/battle.h"
 
 int main()
 {
-    Hero h = Hero("dupa", 2);
+    Hero h1 = Hero("hero1", true);
     Stack s1 = Stack(1, 2, 3, 4, 5, 6);
     Stack s2 = Stack(7, 8, 9, 10, 11, 12);
-    
-    h.getForces().push_back(s1);
+    s1.setCords({1, 7});
+    h1.AddStack(s1);
+    h1.AddStack(s2);
 
-    std::cout<<h.getForces()[0].getSpeed()<<std::endl;
-    std::cout<<h.getForces()[0].getAttack()<<std::endl;
+    Hero h2 = Hero("hero2", false);
+    Stack s3 = Stack(2, 3, 4, 5, 6, 7);
+    Stack s4 = Stack(3, 4, 5, 6, 7,8 );
+    h2.AddStack(s3);
+    h2.AddStack(s4);
 
-    h.getForces()[0].setSpeed(666);
-    std::cout<<h.getForces()[0].getSpeed()<<std::endl;
-
+    Battle b = Battle(h1, h2);
+    bool result = b.MoveStack({1, 7}, {2, 2}, true);
 
     return 0;
 }

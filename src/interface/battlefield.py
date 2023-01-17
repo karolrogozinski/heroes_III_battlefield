@@ -1,4 +1,5 @@
 import os
+from time import sleep
 
 import pygame
 
@@ -55,7 +56,7 @@ class BattefieldInterface:
         self.background_image = pygame.image.load(
             os.path.join(
                 self.dirname,
-                '../images/battlefield_background.jpg'
+                '../images/bg.jpeg'
             ))
         self.blue_flag = pygame.image.load(
             os.path.join(
@@ -67,11 +68,46 @@ class BattefieldInterface:
                 self.dirname,
                 'sprites/red_flag.png'
             ))
+        desc_frame = pygame.Surface((250, 300))
+        desc_frame = desc_frame.convert_alpha()
+        desc_frame.fill((255, 204, 0))
+        desc_frame.fill((0, 0, 0, 100), desc_frame.get_rect().inflate(-5, -5))
+        self.stat_box = desc_frame
+
+    def create_cursors(self) -> None:
+        self.cursor_attack_mele = pygame.image.load(
+            os.path.join(
+                self.dirname,
+                'sprites/attack_mele.png'
+            )).convert_alpha()
+        self.cursor_attack_range = pygame.image.load(
+            os.path.join(
+                self.dirname,
+                'sprites/attack_range.png'
+            )).convert_alpha()
+        self.cursor_move = pygame.image.load(
+            os.path.join(
+                self.dirname,
+                'sprites/move_coursor.png'
+            )).convert_alpha()
+        self.cursor_other = pygame.image.load(
+            os.path.join(
+                self.dirname,
+                'sprites/menu_coursor.png'
+            )).convert_alpha()
 
     def draw_bg(self) -> None:
         self.screen.blit(self.background_image, (0, 0))
-        self.screen.blit(self.blue_flag, (20, 0))
-        self.screen.blit(self.red_flag, (1200, 0))
+        self.screen.blit(
+            self.stat_box,
+            self.stat_box.get_rect(topleft=(25, 400))
+        )
+        self.screen.blit(
+            self.stat_box,
+            self.stat_box.get_rect(topleft=(1015, 400))
+        )
+        self.screen.blit(self.blue_flag, (220, 400))
+        self.screen.blit(self.red_flag, (1210, 400))
 
     def get_active(self) -> HexFieldInterface:
         for hf in self.battlefield:
@@ -82,13 +118,24 @@ class BattefieldInterface:
         for (stack, enemy) in zip(self.battle.get_player().get_forces(),
                                   self.battle.get_enemy().get_forces()):
             if stack.get_size() > 0:
-                tmp_unit = UnitInterface(stack.get_id(), stack.get_size(),
-                                         stack.get_speed(), 1)
+                tmp_unit = UnitInterface(stack.get_id(),
+                                         stack.get_size(),
+                                         stack.get_speed(), 1,
+                                         stack.get_attack(),
+                                         stack.get_protection(),
+                                         stack.get_damage(),
+                                         stack.get_hp())
                 self.units.append(tmp_unit)
 
             if enemy.get_size() > 0:
-                tmp_unit = UnitInterface(enemy.get_id(), enemy.get_size(),
-                                         enemy.get_speed(), 1, True)
+                tmp_unit = UnitInterface(enemy.get_id(),
+                                         enemy.get_size(),
+                                         enemy.get_speed(), 1,
+                                         enemy.get_attack(),
+                                         enemy.get_protection(),
+                                         enemy.get_damage(),
+                                         enemy.get_hp(),
+                                         True)
                 self.units.append(tmp_unit)
 
     def set_units(self) -> None:
@@ -207,8 +254,61 @@ class BattefieldInterface:
         if self.transparency == 175 or self.transparency == 50:
             self.transparency_step = -self.transparency_step
 
+    def get_possible_enemy_attacks(self, possible_moves) -> list[tuple[int]]:
+        possible_attacks = list()
+        for hf in self.battlefield:
+            if hf.get_unit():
+                if hf.get_unit().is_enemy():
+                    continue
+                if self.battle.get_enemy().get_stack(
+                   self.get_active().get_cords()).get_type():
+                    possible_attacks.append(hf.get_cords())
+                    continue
+                if self.isin_neighbourhood(hf, possible_moves):
+                    possible_attacks.append(hf.get_cords())
+        return possible_attacks
+
     def move_enemy(self, possible_moves) -> None:
-        self.move_unit(possible_moves[0])
+        possible_attack_cords = self.get_possible_enemy_attacks(possible_moves)
+        if possible_attack_cords:
+            a_cords = self.battle.get_possible_attack_cords(
+                self.get_active().get_cords(), possible_attack_cords[0], False)
+
+            new_cords = self.set_attack_moves(
+                    a_cords[1],
+                    self.battle.get_enemy().get_stack(
+                        self.get_active().get_cords()).get_type()
+                )
+
+            attack = self.battle.perform_attack(
+                self.get_active().get_cords(),
+                possible_attack_cords[0],
+                False
+            )
+
+            if attack[0]:
+                self.update_stacks(new_cords, possible_attack_cords[0], False)
+
+            if attack[1]:
+                if self.find_by_cords(
+                   possible_attack_cords[0]).is_active():
+                    self.next_unit()
+                    self.changed_active = 1
+                corpse = self.find_by_cords(
+                    possible_attack_cords[0]).take_unit()
+                corpse.alive = False
+                self.find_by_cords(
+                    possible_attack_cords[0]).corpse = corpse
+
+            if attack[2]:
+                if self.find_by_cords(a_cords[1]).is_active():
+                    self.next_unit()
+                    self.changed_active = 1
+                corpse = self.find_by_cords(a_cords[1]).take_unit()
+                corpse.alive = False
+                self.find_by_cords(a_cords[1]).corpse = corpse
+        else:
+            self.move_unit(possible_moves[0])
 
     @staticmethod
     def are_neighbours(hex_1: HexFieldInterface,
@@ -232,17 +332,23 @@ class BattefieldInterface:
                     return True
         return False
 
-    def update_stacks(self, hex_attack, hex_def) -> None:
-        attacker = self.battle.get_player().get_stack(hex_attack)
-        defender = self.battle.get_enemy().get_stack(hex_def)
+    def update_stacks(self, hex_attack, hex_def, player: bool) -> None:
+        if player:
+            attacker = self.battle.get_player().get_stack(hex_attack)
+            defender = self.battle.get_enemy().get_stack(hex_def)
+        else:
+            attacker = self.battle.get_enemy().get_stack(hex_attack)
+            defender = self.battle.get_player().get_stack(hex_def)
 
         a_unit = self.find_by_cords(self.get_active().get_cords()).take_unit()
         a_unit.stack_size = attacker.get_size()
+        a_unit.hp = attacker.get_hp()
         self.find_by_cords(hex_attack).set_unit(a_unit)
         self.find_by_cords(hex_attack).active = True
 
         d_unit = self.find_by_cords(hex_def).take_unit()
         d_unit.stack_size = defender.get_size()
+        d_unit.hp = defender.get_hp()
         self.find_by_cords(defender.get_cords()).set_unit(d_unit)
 
     def play_music(self) -> None:
@@ -266,9 +372,61 @@ class BattefieldInterface:
             return 1
         return 0
 
+    def draw_cursor(self, cursor: pygame.Surface,
+                    mouse_x: int, mouse_y: int) -> None:
+        cursor = pygame.transform.scale(cursor, (30, 30))
+        self.screen.blit(
+            cursor,
+            cursor.get_rect(center=(mouse_x, mouse_y))
+        )
+
+    def draw_cursor_screen(self, polygon: HexFieldInterface, shooter: bool,
+                           mouse_x: int, mouse_y: int,
+                           possible_moves: list[tuple[int]]) -> None:
+        if polygon:
+            if polygon.get_unit():
+                self.draw_frame(polygon.get_unit().get_desc_surf(),
+                                25, 400, not polygon.get_unit().is_enemy())
+                if polygon.get_unit().is_enemy():
+                    if shooter:
+                        self.draw_cursor(self.cursor_attack_range,
+                                         mouse_x, mouse_y)
+                    else:
+                        if self.isin_neighbourhood(polygon, possible_moves):
+                            self.draw_cursor(self.cursor_attack_mele,
+                                             mouse_x, mouse_y)
+                        else:
+                            self.draw_cursor(self.cursor_other,
+                                             mouse_x, mouse_y)
+                else:
+                    self.draw_cursor(self.cursor_other, mouse_x, mouse_y)
+            else:
+                if polygon.get_cords() in possible_moves:
+                    self.draw_cursor(self.cursor_move, mouse_x, mouse_y)
+                else:
+                    self.draw_cursor(self.cursor_other, mouse_x, mouse_y)
+        else:
+            self.draw_cursor(self.cursor_other, mouse_x, mouse_y)
+
+    def draw_frame(self, frame: pygame.Surface,
+                   x_cord: int, y_cord: int, is_player: bool) -> None:
+        if is_player:
+            self.screen.blit(
+                frame,
+                frame.get_rect(topleft=(x_cord, y_cord))
+            )
+            self.screen.blit(self.blue_flag, (220, 400))
+        else:
+            self.screen.blit(
+                frame,
+                frame.get_rect(topleft=(x_cord+990, y_cord))
+            )
+            self.screen.blit(self.red_flag, (1210, 400))
+
     def run(self) -> None:
         self.play_music()
         self.create_bg()
+        self.create_cursors()
         self.create_battlefield(color=(0, 0, 0, 255), size=11)
         self.sort_battlefield()
         self.create_units()
@@ -277,6 +435,9 @@ class BattefieldInterface:
         self.sort_units()
 
         mouse_x, mouse_y = 0, 0
+        clock = pygame.time.Clock()
+
+        pygame.mouse.set_visible(False)
         self.units[0].active = True
 
         possible_moves = self.battle.get_possible_move_cords(
@@ -285,8 +446,13 @@ class BattefieldInterface:
         self.set_available_moves(possible_moves)
 
         while self.RUN_BF:
+            clock.tick(30)
+            self.changed_active = 0
             moved = 0
             mouse_clicked = False
+            shooter = self.battle.get_player().get_stack(
+                self.get_active().get_cords()
+                ).get_type()
 
             self.update_transparency()
             self.draw_bg()
@@ -298,7 +464,8 @@ class BattefieldInterface:
                     mouse_x, mouse_y = event.pos
                 elif event.type == pygame.MOUSEBUTTONUP:
                     mouse_x, mouse_y = event.pos
-                    mouse_clicked = True
+                    if event.button == 1:
+                        mouse_clicked = True
 
             self.color_map((0, 0, 0, 175))
             polygon = self.determine_polygon(mouse_x, mouse_y)
@@ -316,9 +483,6 @@ class BattefieldInterface:
             if polygon and not mouse_clicked:
                 if polygon.get_unit():
                     if polygon.get_unit().is_enemy():
-                        shooter = self.battle.get_player().get_stack(
-                                        self.get_active().get_cords()
-                                        ).get_type()
                         if self.isin_neighbourhood(polygon, possible_moves)\
                            and not shooter:
                             a_cords = self.battle.get_possible_attack_cords(
@@ -360,12 +524,16 @@ class BattefieldInterface:
                         )
                         if attack[0]:
                             moved = 1
-
                             self.update_stacks(
                                 new_cords,
-                                polygon.get_cords()
+                                polygon.get_cords(),
+                                True
                             )
                         if attack[1]:
+                            if self.find_by_cords(
+                               polygon.get_cords()).is_active():
+                                self.next_unit()
+                                self.changed_active = 1
                             corpse = self.find_by_cords(
                                 polygon.get_cords()).take_unit()
                             corpse.alive = False
@@ -373,6 +541,9 @@ class BattefieldInterface:
                                 polygon.get_cords()).corpse = corpse
 
                         if attack[2]:
+                            if self.find_by_cords(a_cords[1]).is_active():
+                                self.next_unit()
+                                self.changed_active = 1
                             corpse = self.find_by_cords(a_cords[1]).take_unit()
                             corpse.alive = False
                             self.find_by_cords(a_cords[1]).corpse = corpse
@@ -382,6 +553,8 @@ class BattefieldInterface:
                 self.change_color((0, 150, 0, 50), polygon)
 
             self.draw_battlefield()
+            self.draw_cursor_screen(polygon, shooter, 
+                                    mouse_x, mouse_y, possible_moves)
 
             end_cond = self.check_end()
             if end_cond == 1:
@@ -392,9 +565,10 @@ class BattefieldInterface:
                 break
 
             if moved:
-                self.next_unit()
+                if not self.changed_active:
+                    self.next_unit()
                 is_player = False if self.get_active().get_unit().is_enemy()\
-                                  else True
+                    else True
                 possible_moves = self.battle.get_possible_move_cords(
                     self.get_active().get_cords(), is_player)
 

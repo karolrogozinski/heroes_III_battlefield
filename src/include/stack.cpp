@@ -40,13 +40,16 @@ PYBIND11_MODULE(stack, m)
         .def("generate_stack_damage", &Stack::GenerateStackDamage);
 }
 
-bool Stack::BeAttacked(float damage)
+bool Stack::BeAttacked(int damage)
 {
     int deadUnits;
-    float recdDamage = 0;
+    int recdDamage = 0;
     for (deadUnits = 0; deadUnits < mSize; ++deadUnits)
     {
-        recdDamage += mUnitHP;
+        if (!deadUnits)
+            recdDamage += mHP - (mSize-1) * mUnitHP;
+        else
+            recdDamage += mUnitHP;
         if (recdDamage > damage)
         {
             recdDamage = damage;
@@ -74,7 +77,7 @@ int Stack::GenerateStackDamage()
 bool Stack::Attack(Stack& stack)
 {
     const float multiplier = 0.05;
-    float finalDamage =  mSize  * GenerateStackDamage() + multiplier *
+    int finalDamage =  mSize  * GenerateStackDamage() + multiplier *
                         (mAttack - stack.getProtection());
     return stack.BeAttacked(finalDamage);
 }

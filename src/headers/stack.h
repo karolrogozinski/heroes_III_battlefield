@@ -39,7 +39,7 @@ class Stack : public std::enable_shared_from_this<Stack>
             Stack();
             mID = id;
         }
-
+ 
         Stack(int id, int type,
               unsigned int unitHP,
               int size = 1, int speed = 1,
@@ -83,7 +83,7 @@ class Stack : public std::enable_shared_from_this<Stack>
         void setDamage(cordsT damage) {mDamage = damage;}
         void setCords(cordsT cords) {mCords = cords;}
 
-        bool BeAttacked(float damage);
+        bool BeAttacked(int damage);
         bool Attack(Stack& stack);
         void AddUnits(Stack stack);
 

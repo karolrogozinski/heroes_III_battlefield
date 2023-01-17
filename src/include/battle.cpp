@@ -128,6 +128,8 @@ std::vector<cordsT> GetAllUserOccupiedCords(Hero user)
     std::vector<cordsT> occupiedCords = std::vector<cordsT>();
     for (auto stack: user.getForces())
     {
+        if (stack.getSize() <= 0)
+            continue;
         occupiedCords.push_back(stack.getCords());
     }
     return occupiedCords;

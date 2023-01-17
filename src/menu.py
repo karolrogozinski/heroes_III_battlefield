@@ -209,14 +209,16 @@ class MainMenu():
                 shooter = 0
                 if idx+1 in (2, 5):
                     shooter = 1
-                temp_stack = Stack(idx+1, shooter, idx, size, idx+1, 1, 1)
-                temp_stack.set_damage((idx+1, idx*2))
+                temp_stack = Stack(idx+1, shooter, 2*idx+10, size,
+                                   idx+1, 2*idx+1, 2*idx+1)
+                temp_stack.set_damage((idx+1, (idx+1)*2))
                 shooter = 0
                 if idx+1 == 2:
                     shooter = 1
-                temp_stack_enemy = Stack(idx+8, shooter, idx+10,
-                                         size*self.difficulty, idx+1, 1, 1)
-                temp_stack_enemy.set_damage((idx+1, idx*2))
+                temp_stack_enemy = Stack(idx+8, shooter, 2*idx+10,
+                                         size*self.difficulty,
+                                         idx+1, 2*idx+1, 2*idx+1)
+                temp_stack_enemy.set_damage((idx+1, (idx+1)*2))
                 player.add_stack(temp_stack)
                 enemy.add_stack(temp_stack_enemy)
 

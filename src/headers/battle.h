@@ -8,8 +8,8 @@ typedef std::pair<int, int> cordsT;
 
 class Battle
 {
-    Hero mEnemy;
     Hero mPlayer;
+    Hero mEnemy;
     const int mSize = 11;
 
     public:

@@ -14,16 +14,13 @@ class Stack
     unsigned int mUnitHP;
 
     int mSize;
-    
-
     int mProtection;
     int mAttack;
+    int mSpeed;
     cordsT mDamage;
-
     cordsT mCords;
 
     public:
-        int mSpeed;
         Stack()
         {
             mID = 0;
@@ -44,20 +41,12 @@ class Stack
               unsigned int unitHP,
               int size = 1, int speed = 1,
               int prot = 1, int att = 1):
-              mID(id), mType(type), mSpeed(speed), mUnitHP(unitHP), mSize(size), mProtection(prot),
-              mAttack(att)
+              mID(id), mType(type), mUnitHP(unitHP), mSize(size),
+              mProtection(prot), mAttack(att), mSpeed(speed)
         {
             mHP = mUnitHP * mSize;
             mCords = cordsT();
         }
-
-        // Stack(const Stack& stack)
-        // {
-        //     mID = stack.mID;
-        //     mSize = stack.mSize;
-        //     mProtection = stack.mProtection;
-        //     mAttack = stack.mAttack;
-        // }
 
         ~Stack(){}
 

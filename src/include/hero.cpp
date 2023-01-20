@@ -8,8 +8,7 @@ Stack& Hero::GetStack(std::pair<int, int> cords)
             return stack;
         }
     }
-    Stack failStack = Stack();
-    return failStack;
+    return mForces[0];
 }
 
 void Hero::AddStack(Stack newStack)

@@ -3,79 +3,79 @@
 #include <utility>
 #include <cstdlib>
 
-typedef std::pair<int, int> cordsT;
+typedef std::pair<int, int> IntPair;
 class Stack
 {
-    int mID;
+    int ID_;
     // 0 - usual, 1 - shooter, (2- flying)
-    int mType;
+    int type_;
 
-    unsigned int mHP;
-    unsigned int mUnitHP;
+    unsigned int HP_;
+    unsigned int unitHP_;
 
-    int mSize;
-    int mProtection;
-    int mAttack;
-    int mSpeed;
-    cordsT mDamage;
-    cordsT mCords;
+    int size_;
+    int protection_;
+    int attack_;
+    int speed_;
+    IntPair damage_;
+    IntPair cords_;
 
     public:
         Stack()
         {
-            mID = 0;
-            mSize = 1;
-            mProtection = 1;
-            mAttack = 1;
-            mSpeed = 1;
-            mCords = cordsT();
+            ID_ = 0;
+            size_ = 1;
+            protection_ = 1;
+            attack_ = 1;
+            speed_ = 1;
+            cords_ = IntPair();
         }
 
         Stack(int id)
         {
             Stack();
-            mID = id;
+            ID_ = id;
         }
  
         Stack(int id, int type,
               unsigned int unitHP,
               int size = 1, int speed = 1,
               int prot = 1, int att = 1):
-              mID(id), mType(type), mUnitHP(unitHP), mSize(size),
-              mProtection(prot), mAttack(att), mSpeed(speed)
+              ID_(id), type_(type), unitHP_(unitHP), size_(size),
+              protection_(prot), attack_(att), speed_(speed)
         {
-            mHP = mUnitHP * mSize;
-            mCords = cordsT();
+            HP_ = unitHP_ * size_;
+            cords_ = IntPair();
         }
 
         ~Stack(){}
 
-        int getID() {return mID;}
-        int getType() {return mType;}
-        unsigned int getHP() {return mHP;}
-        unsigned int getUnitHP() {return mUnitHP;}
-        int getSize() {return mSize;}
-        int getSpeed() {return mSpeed;}
-        int getProtection() {return mProtection;}
-        int getAttack() {return mAttack;}
-        cordsT getDamage() {return mDamage;}
-        cordsT getCords() {return mCords;}
+        int getID() {return ID_;}
+        int getType() {return type_;}
+        unsigned int getHP() {return HP_;}
+        unsigned int getUnitHP() {return unitHP_;}
+        int getSize() {return size_;}
+        int getSpeed() {return speed_;}
+        int getProtection() {return protection_;}
+        int getAttack() {return attack_;}
+        IntPair getDamage() {return damage_;}
+        IntPair getCords() {return cords_;}
 
-        void setID(int id) {mID = id;}
-        void setType(int type) {mType = type;}
-        void setHP(unsigned int HP) {mHP = HP;}
-        void setUnitHP(unsigned int unitHP) {mUnitHP = unitHP;}
-        void setSize(int size) {mSize = size;}
-        void setSpeed(int speed) {mSpeed = speed;}
-        void setProtection(int prot) {mProtection = prot;}
-        void setAttack(int attack) {mAttack = attack;}
-        void setDamage(cordsT damage) {mDamage = damage;}
-        void setCords(cordsT cords) {mCords = cords;}
+        void setID(int id) {ID_ = id;}
+        void setType(int type) {type_ = type;}
+        void setHP(unsigned int HP) {HP_ = HP;}
+        void setUnitHP(unsigned int unitHP) {unitHP_ = unitHP;}
+        void setSize(int size) {size_ = size;}
+        void setSpeed(int speed) {speed_ = speed;}
+        void setProtection(int prot) {protection_ = prot;}
+        void setAttack(int attack) {attack_ = attack;}
+        void setDamage(IntPair damage) {damage_ = damage;}
+        void setCords(IntPair cords) {cords_ = cords;}
 
-        bool BeAttacked(int damage);
-        bool Attack(Stack& stack);
-        void AddUnits(Stack stack);
+        bool beAttacked(int damage);
+        bool attack(Stack& stack);
+        void addUnits(Stack stack);
 
-        int GenerateStackDamage();
+        int generateStackDamage();
         friend bool operator== (const Stack& lhs, const Stack& rhs);
 };

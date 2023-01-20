@@ -38,10 +38,10 @@ PYBIND11_MODULE(bindings, m)
         .def("set_damage", &Stack::setDamage)
         .def("set_cords", &Stack::setCords)
         
-        .def("be_attacked", &Stack::BeAttacked)
-        .def("attack", &Stack::Attack)
-        .def("add_units", &Stack::AddUnits)
-        .def("generate_stack_damage", &Stack::GenerateStackDamage);
+        .def("be_attacked", &Stack::beAttacked)
+        .def("attack", &Stack::attack)
+        .def("add_units", &Stack::addUnits)
+        .def("generate_stack_damage", &Stack::generateStackDamage);
 
     py::class_<std::vector<Stack>>(m, "StackVector")
         .def(py::init<>())

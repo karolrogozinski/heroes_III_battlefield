@@ -206,21 +206,21 @@ std::vector<bool> Battle::PerformAttack(cordsT itsCords, cordsT opponentCords,
             return {false, false, false};
 
         if (isPlayer)
-            attackedDead = mPlayer.GetStack(possibleMoveResponse.second).Attack(mEnemy.GetStack(opponentCords));
+            attackedDead = mPlayer.GetStack(possibleMoveResponse.second).attack(mEnemy.GetStack(opponentCords));
         else
-            attackedDead = mEnemy.GetStack(possibleMoveResponse.second).Attack(mPlayer.GetStack(opponentCords));
+            attackedDead = mEnemy.GetStack(possibleMoveResponse.second).attack(mPlayer.GetStack(opponentCords));
 
         if (!attackedDead)
         {
             if (isPlayer)
-                attackingDead = mEnemy.GetStack(opponentCords).Attack(mPlayer.GetStack(possibleMoveResponse.second));
+                attackingDead = mEnemy.GetStack(opponentCords).attack(mPlayer.GetStack(possibleMoveResponse.second));
             else
-                attackingDead = mPlayer.GetStack(opponentCords).Attack(mEnemy.GetStack(possibleMoveResponse.second));
+                attackingDead = mPlayer.GetStack(opponentCords).attack(mEnemy.GetStack(possibleMoveResponse.second));
         }
         return {true, attackedDead, attackingDead};
     }
     if (isPlayer)
-        return {true, mPlayer.GetStack(itsCords).Attack(mEnemy.GetStack(opponentCords)), false};
+        return {true, mPlayer.GetStack(itsCords).attack(mEnemy.GetStack(opponentCords)), false};
     else
-        return {true, mEnemy.GetStack(itsCords).Attack(mPlayer.GetStack(opponentCords)), false};
+        return {true, mEnemy.GetStack(itsCords).attack(mPlayer.GetStack(opponentCords)), false};
 }

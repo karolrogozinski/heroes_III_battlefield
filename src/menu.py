@@ -8,10 +8,10 @@ from pygame_menu.locals import ALIGN_CENTER
 
 from .interface.battlefield import BattefieldInterface
 
-from .controller import Controller
-from .battle import Battle
-from .hero import Hero
-from .stack import Stack
+from .bindings import Controller, Battle, Hero, Stack
+# from .battle import Battle
+# from .hero import Hero
+# from .stack import Stack
 
 
 class MainMenu():

@@ -6,7 +6,7 @@ import pygame
 from .hexfield import HexFieldInterface
 from .unit import UnitInterface
 
-from ..battle import Battle
+from ..bindings import Battle
 
 
 class BattefieldInterface:
@@ -446,7 +446,7 @@ class BattefieldInterface:
         self.set_available_moves(possible_moves)
 
         while self.RUN_BF:
-            clock.tick(30)
+            clock.tick(120)
             self.changed_active = 0
             moved = 0
             mouse_clicked = False

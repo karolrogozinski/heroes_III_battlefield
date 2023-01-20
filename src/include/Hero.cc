@@ -1,4 +1,4 @@
-#include "../headers/hero.h"
+#include "../headers/Hero.h"
 
 Stack& Hero::GetStack(std::pair<int, int> cords)
 {

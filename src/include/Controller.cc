@@ -1,20 +1,20 @@
-#include "../headers/controller.h"
+#include "../headers/Controller.h"
 
-void Controller::UpdateSettings(const std::string& section,
+void Controller::updateSettings(const std::string& section,
                                         const std::string& field,
                                         std::string value)
 {
-    settingsMap::iterator it = mSettings.find(section);
-    if (it == mSettings.end())
+    SettingsMap::iterator it = settings_.find(section);
+    if (it == settings_.end())
     {
-        sectionVec sectionData = sectionVec();
-        rowPair rowData = rowPair(field, value); 
+        SectionsVec sectionData = SectionsVec();
+        RowPair rowData = RowPair(field, value); 
         sectionData.push_back(rowData);
-        mSettings.insert(std::make_pair(section, sectionData));
+        settings_.insert(std::make_pair(section, sectionData));
     }
     else
     {
-        sectionVec sectionData = it->second;
+        SectionsVec sectionData = it->second;
         bool changed = false;
         if (!sectionData.size())
         {
@@ -22,7 +22,7 @@ void Controller::UpdateSettings(const std::string& section,
         }
         else
         {
-            for (rowPair row: sectionData)
+            for (RowPair row: sectionData)
             {
                 if (row.first == field)
                 {
@@ -39,21 +39,21 @@ void Controller::UpdateSettings(const std::string& section,
     }
 }
 
-std::string Controller::GetSetting(const std::string& section,
+std::string Controller::getSetting(const std::string& section,
                                     const std::string& field)
 {
-    settingsMap::iterator it = mSettings.find(section);
-    if (it == mSettings.end())
+    SettingsMap::iterator it = settings_.find(section);
+    if (it == settings_.end())
     {
         return "";
     }
     else
     {
-        sectionVec sectionData = it->second;
+        SectionsVec sectionData = it->second;
         if (!sectionData.size()) return "";
         else
         {
-            for (rowPair row: sectionData)
+            for (RowPair row: sectionData)
             {
                 if (row.first == field)
                 {
@@ -67,7 +67,7 @@ std::string Controller::GetSetting(const std::string& section,
 
 void Controller::ReadConfig()
 {
-    std::ifstream Conf(mRelPath);
+    std::ifstream Conf(relPath_);
     std::string row;
     std::string sectionName;
     std::vector<std::string> lines = std::vector<std::string>();
@@ -80,15 +80,13 @@ void Controller::ReadConfig()
             if (row.substr(0, 1) == "[" && row.substr(row.size()-1) == "]")
             {
                 sectionName = row.substr(1, row.size() - 2);
-                // std::cout << sectionName << std::endl;
-                mSettings.insert({sectionName, sectionVec()});
+                settings_.insert({sectionName, SectionsVec()});
                 continue;
             }
             std::size_t pos = row.find("=");
             if (pos != std::string::npos)
             {
-                // std::cout << row.substr(pos + 1) << std::endl;
-                mSettings[sectionName].push_back(
+                settings_[sectionName].push_back(
                     std::make_pair(row.substr(0, pos), row.substr(pos + 1)));
             }
 

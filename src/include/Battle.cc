@@ -1,4 +1,4 @@
-#include "../headers/battle.h"
+#include "../headers/Battle.h"
 
 void Battle::GenerateDefUnitsCords(Hero hero, bool leftSide)
 {

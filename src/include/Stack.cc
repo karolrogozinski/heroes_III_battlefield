@@ -1,4 +1,4 @@
-#include "../headers/stack.h"
+#include "../headers/Stack.h"
 
 bool Stack::BeAttacked(int damage)
 {

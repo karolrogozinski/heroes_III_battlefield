@@ -1,11 +1,11 @@
 
-#include "../headers/battle.h"
-#include "../headers/controller.h"
-
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/complex.h>
 #include <pybind11/functional.h>
+
+#include "../headers/Battle.h"
+#include "../headers/Controller.h"
 namespace py = pybind11;
 
 
@@ -91,6 +91,6 @@ PYBIND11_MODULE(bindings, m)
         .def("get_settings", &Controller::getSettings)
         .def("get_path", &Controller::getPath)
         .def("set_path", &Controller::setPath)
-        .def("update_settings", &Controller::UpdateSettings)
-        .def("get_setting", &Controller::GetSetting);
+        .def("update_settings", &Controller::updateSettings)
+        .def("get_setting", &Controller::getSetting);
 }

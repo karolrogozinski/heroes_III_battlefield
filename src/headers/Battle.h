@@ -2,7 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include <memory>
-#include "hero.h"
+#include "Hero.h"
 
 typedef std::pair<int, int> cordsT;
 

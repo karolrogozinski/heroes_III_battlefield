@@ -2,7 +2,7 @@
 #include <string>
 #include <memory>
 #include <math.h>
-#include "stack.h"
+#include "Stack.h"
 
 class Hero
 {

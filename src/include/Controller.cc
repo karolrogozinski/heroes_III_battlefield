@@ -2,6 +2,7 @@
 
 void Controller::updateSettings(const std::string &section,
                                 const std::string &field, std::string value) {
+  // Change value of given setting in section's field
   SettingsMap::iterator it = settings_.find(section);
   if (it == settings_.end()) {
     SectionsVec sectionData = SectionsVec();

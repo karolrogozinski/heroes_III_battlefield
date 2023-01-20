@@ -1,6 +1,7 @@
 #include "../headers/Hero.h"
 
-Stack &Hero::getStack(std::pair<int, int> cords) {
+Stack &Hero::getStack(IntPair cords) {
+  // Retrieves stack of hero by its cords.
   for (Stack &stack : forces_) {
     if (stack.getCords() == cords) {
       return stack;

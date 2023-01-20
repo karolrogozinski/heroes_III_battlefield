@@ -17,6 +17,7 @@ Battle::Battle(Hero player, Hero enemy) : player_(player), enemy_(enemy) {
 
 std::vector<IntPair> CalcLineCords(int lstep, int rstep, IntPair point,
                                    int ystep) {
+  // Calc cords in line, only to use in calcing possible moves
   std::vector<IntPair> result;
   for (int i = -lstep; i <= rstep; i++) {
     result.push_back(std::make_pair(point.first + i, point.second + ystep));
@@ -26,6 +27,7 @@ std::vector<IntPair> CalcLineCords(int lstep, int rstep, IntPair point,
 
 std::vector<std::vector<IntPair>> CalcPossibleMovePoints(int step,
                                                          IntPair point) {
+  // Calc possible move points for stack in given point (cords) by given step
   std::vector<std::vector<IntPair>> final_points;
   int lstep = step;
   int rstep = step;
@@ -56,6 +58,7 @@ std::vector<std::vector<IntPair>> CalcPossibleMovePoints(int step,
 
 std::vector<IntPair> Battle::getPossibleMoveCords(IntPair cords,
                                                   bool is_player) {
+  // Return possible move cords for stack in given cords
   Stack stack = is_player ? player_.getStack(cords) : enemy_.getStack(cords);
   std::vector<std::vector<IntPair>> temp_cords =
       CalcPossibleMovePoints(stack.getSpeed(), cords);
@@ -78,7 +81,7 @@ std::vector<IntPair> Battle::getPossibleMoveCords(IntPair cords,
   return curr_cords;
 }
 
-std::vector<IntPair> GetAllUserOccupiedCords(Hero user) {
+std::vector<IntPair> getAllUserOccupiedCords(Hero user) {
   std::vector<IntPair> occupied_cords = std::vector<IntPair>();
   for (auto stack : user.getForces()) {
     if (stack.getSize() <= 0)
@@ -89,8 +92,8 @@ std::vector<IntPair> GetAllUserOccupiedCords(Hero user) {
 }
 
 std::vector<IntPair> Battle::getAllOccupiedCords() {
-  std::vector<IntPair> occupied_player_cords = GetAllUserOccupiedCords(player_);
-  std::vector<IntPair> occupied_enemy_cords = GetAllUserOccupiedCords(enemy_);
+  std::vector<IntPair> occupied_player_cords = getAllUserOccupiedCords(player_);
+  std::vector<IntPair> occupied_enemy_cords = getAllUserOccupiedCords(enemy_);
 
   occupied_player_cords.reserve(occupied_player_cords.size() +
                                 occupied_enemy_cords.size());
@@ -149,14 +152,15 @@ std::pair<bool, IntPair> Battle::getPossibleAttackCords(IntPair its_cords,
 
 bool Battle::checkBasicAttackPoss(IntPair its_cords, IntPair opponent_cords,
                                   bool is_player) {
+  // Check if attak of stack(its_cords) is able on second stack(opponent_cords)
   std::vector<IntPair> attacking_cords =
-      GetAllUserOccupiedCords(is_player ? player_ : enemy_);
+      getAllUserOccupiedCords(is_player ? player_ : enemy_);
   if (!(std::find(attacking_cords.begin(), attacking_cords.end(), its_cords) !=
         attacking_cords.end()))
     return false;
 
   std::vector<IntPair> attacked_cords =
-      GetAllUserOccupiedCords(is_player ? enemy_ : player_);
+      getAllUserOccupiedCords(is_player ? enemy_ : player_);
   if (!(std::find(attacked_cords.begin(), attacked_cords.end(),
                   opponent_cords) != attacked_cords.end()))
     return false;

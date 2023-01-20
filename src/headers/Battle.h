@@ -22,17 +22,18 @@ class Battle
         void setPlayer(Hero player) {player_ = player;}
         void setEnemy(Hero enemy) {enemy_ = enemy;}
 
-        void generateDefUnitsCords(Hero Hero, bool leftSide);
+        void generateDefUnitsCords(Hero hero, bool left_side);
 
-        bool moveStack(IntPair startCords, IntPair finalCords, bool isPlayer);
-        bool checkBasicAttackPoss(IntPair itsCords, IntPair opponentCords, bool isPlayer);
-        std::vector<bool> performAttack(IntPair itsCords, IntPair opponentCords,
-                                            bool isPlayer);
+        bool moveStack(IntPair start_cords, IntPair final_cords, bool is_player);
+        bool checkBasicAttackPoss(IntPair its_cords, IntPair opponent_cords, bool is_player);
+        std::vector<bool> performAttack(IntPair its_cords, IntPair opponent_cords,
+                                            bool is_player);
 
         std::vector<IntPair> getAllOccupiedCords();
-        bool checkMovePossibility(IntPair itsCords, IntPair finalCords, bool isPlayer);
-        std::vector<IntPair> getPossibleMoveCords(IntPair cords, bool isPlayer); 
-        std::pair<bool, IntPair> getPossibleAttackCords(IntPair itsCords,
-                                                     IntPair opponentCords,
-                                                     bool isPlayer);
+        bool checkMovePossibility(IntPair its_cords, IntPair final_cords, bool is_player);
+        std::vector<IntPair> getPossibleMoveCords(IntPair cords, bool is_player); 
+        std::pair<bool, IntPair> getPossibleAttackCords(IntPair its_cords,
+                                                     IntPair opponent_cords,
+                                                     bool is_player);
+        std::vector<bool> contrattack(bool, std::pair<bool, IntPair>, IntPair, IntPair, int);
 };

@@ -11,7 +11,7 @@ Stack& Hero::getStack(std::pair<int, int> cords)
     return forces_[0];
 }
 
-void Hero::addStack(Stack newStack)
+void Hero::addStack(Stack new_stack)
 {
-    forces_.push_back(newStack);
+    forces_.push_back(new_stack);
 }

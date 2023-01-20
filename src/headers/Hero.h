@@ -14,10 +14,11 @@ class Hero
     public:
         Hero() : name_(""), isPlayer_(false){}
 
-        Hero(std::string name, bool isPlayer) : name_(name), isPlayer_(isPlayer) {}
+        Hero(std::string name, bool is_player) :
+             name_(name), isPlayer_(is_player) {}
 
-        Hero(std::string name, bool isPlayer, std::vector<Stack> forces) :
-             name_(name), isPlayer_(isPlayer), forces_(forces) {}
+        Hero(std::string name, bool is_player, std::vector<Stack> forces) :
+             name_(name), isPlayer_(is_player), forces_(forces) {}
 
         std::string getName() {return name_;}
         bool getIsPlayer() {return isPlayer_;}

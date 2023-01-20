@@ -64,7 +64,7 @@ class Stack
         void setID(int id) {ID_ = id;}
         void setType(int type) {type_ = type;}
         void setHP(unsigned int HP) {HP_ = HP;}
-        void setUnitHP(unsigned int unitHP) {unitHP_ = unitHP;}
+        void setUnitHP(unsigned int unit_HP) {unitHP_ = unit_HP;}
         void setSize(int size) {size_ = size;}
         void setSpeed(int speed) {speed_ = speed;}
         void setProtection(int prot) {protection_ = prot;}

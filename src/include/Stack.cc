@@ -2,22 +2,22 @@
 
 bool Stack::beAttacked(int damage)
 {
-    int deadUnits;
-    int recdDamage = 0;
-    for (deadUnits = 0; deadUnits < size_; ++deadUnits)
+    int dead_units;
+    int recd_damage = 0;
+    for (dead_units = 0; dead_units < size_; ++dead_units)
     {
-        if (!deadUnits)
-            recdDamage += HP_ - (size_-1) * unitHP_;
+        if (!dead_units)
+            recd_damage += HP_ - (size_-1) * unitHP_;
         else
-            recdDamage += unitHP_;
-        if (recdDamage > damage)
+            recd_damage += unitHP_;
+        if (recd_damage > damage)
         {
-            recdDamage = damage;
+            recd_damage = damage;
             break;
         }
     }
-    HP_ -= recdDamage;
-    size_ -= deadUnits;
+    HP_ -= recd_damage;
+    size_ -= dead_units;
     return size_ <= 0 ? true : false;
 }
 
@@ -37,9 +37,9 @@ int Stack::generateStackDamage()
 bool Stack::attack(Stack& stack)
 {
     const float multiplier = 0.05;
-    int finalDamage =  size_  * generateStackDamage() + multiplier *
+    int final_damage =  size_  * generateStackDamage() + multiplier *
                         (attack_ - stack.getProtection());
-    return stack.beAttacked(finalDamage);
+    return stack.beAttacked(final_damage);
 }
 
 bool operator== (const Stack& lhs, const Stack& rhs)

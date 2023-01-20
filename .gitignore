@@ -1,5 +1,5 @@
 src/*so
-.vscode/
+.vscode/*
 src/a.out
 src/pytest.py
 tests/build

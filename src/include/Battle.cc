@@ -1,14 +1,8 @@
 #include "../headers/Battle.h"
 
-void Battle::generateDefUnitsCords(Hero hero, bool leftSide)
+void Battle::generateDefUnitsCords(Hero hero, bool left_side)
 {
-    int x;
-    if (leftSide)
-    {
-        x = 0;
-    } else {
-        x = size_;
-    }
+    int x = left_side ? 0 : size_;
     auto cords = std::make_pair(x, 0);
     for (Stack stack : hero.getForces())
     {
@@ -28,12 +22,12 @@ std::vector<IntPair> CalcLineCords(
     int lstep,
     int rstep,
     IntPair point,
-    int yStep)
+    int ystep)
 {
     std::vector<IntPair> result;
     for (int i = -lstep; i <= rstep; i++) {
         result.push_back(
-            std::make_pair(point.first+i, point.second + yStep)
+            std::make_pair(point.first+i, point.second + ystep)
         );
     }
     return result;
@@ -73,154 +67,156 @@ std::vector<std::vector<IntPair>> CalcPossibleMovePoints(
 
 std::vector<IntPair> Battle::getPossibleMoveCords(
     IntPair cords,
-    bool isPlayer)
+    bool is_player)
 {   
-    Stack stack;
-    stack = isPlayer ? player_.getStack(cords) : enemy_.getStack(cords);
-    std::vector<std::vector<IntPair>> tempCords = CalcPossibleMovePoints(stack.getSpeed(), cords);
-    std::vector<IntPair> currCords;
-    for (auto rows: tempCords)
+    Stack stack = is_player ? player_.getStack(cords) : enemy_.getStack(cords);
+    std::vector<std::vector<IntPair>> temp_cords = CalcPossibleMovePoints(stack.getSpeed(), cords);
+    std::vector<IntPair> curr_cords;
+    for (auto rows: temp_cords)
     {
         for (auto tuple: rows)
         {
             if (tuple.first>=0 && tuple.second>=0 && tuple.first<size_ && tuple.second<size_)
-                currCords.push_back(tuple);
+                curr_cords.push_back(tuple);
         }
     }
     std::vector<IntPair> occupiedCords = getAllOccupiedCords();
     for (IntPair cords: occupiedCords)
     {
-        currCords.erase(std::remove_if(currCords.begin(),
-                                       currCords.end(),
-                                       [&](const IntPair currCord) -> bool
-                                            { return currCord == cords; }),
-                        currCords.end());
+        curr_cords.erase(std::remove_if(curr_cords.begin(),
+                                       curr_cords.end(),
+                                       [&](const IntPair curr_cord) -> bool
+                                            { return curr_cord == cords; }),
+                        curr_cords.end());
     }
-    return currCords;
+    return curr_cords;
 }
 
 std::vector<IntPair> GetAllUserOccupiedCords(Hero user)
 {
-    std::vector<IntPair> occupiedCords = std::vector<IntPair>();
+    std::vector<IntPair> occupied_cords = std::vector<IntPair>();
     for (auto stack: user.getForces())
     {
         if (stack.getSize() <= 0)
             continue;
-        occupiedCords.push_back(stack.getCords());
+        occupied_cords.push_back(stack.getCords());
     }
-    return occupiedCords;
+    return occupied_cords;
 }
 
 std::vector<IntPair> Battle::getAllOccupiedCords()
 {
-    std::vector<IntPair> occupiedPlayerCords;
-    std::vector<IntPair> occupiedEnemyCords;
-
-    occupiedPlayerCords = GetAllUserOccupiedCords(player_);
-    occupiedEnemyCords = GetAllUserOccupiedCords(enemy_);
-    occupiedPlayerCords.reserve(occupiedPlayerCords.size() + occupiedEnemyCords.size());
-    occupiedPlayerCords.insert(occupiedPlayerCords.end(), occupiedEnemyCords.begin(), occupiedEnemyCords.end());
-
-    return occupiedPlayerCords;
-}
-
-bool Battle::moveStack(IntPair startCords,
-                            IntPair finalCords,
-                            bool isPlayer)
-{
-    std::vector<IntPair> moveCords = getPossibleMoveCords(startCords, isPlayer);
-    bool isPossible =  std::find(moveCords.begin(), moveCords.end(), finalCords) != moveCords.end();
-    if (!isPossible)
-        return isPossible;
+    std::vector<IntPair> occupied_player_cords = GetAllUserOccupiedCords(player_);
+    std::vector<IntPair> occupied_enemy_cords = GetAllUserOccupiedCords(enemy_);
     
-    if (isPlayer) {
-        player_.getStack(startCords).setCords(finalCords);
-    } else
-        enemy_.getStack(startCords).setCords(finalCords);
-    return isPossible;
+    occupied_player_cords.reserve(occupied_player_cords.size() + occupied_enemy_cords.size());
+    occupied_player_cords.insert(occupied_player_cords.end(), occupied_enemy_cords.begin(), occupied_enemy_cords.end());
+
+    return occupied_player_cords;
 }
 
-bool Battle::checkMovePossibility(IntPair itsCords, IntPair finalCords, bool isPlayer)
+bool Battle::moveStack(IntPair start_cords,
+                            IntPair final_cords,
+                            bool is_player)
 {
-    std::vector<IntPair> moveCords = getPossibleMoveCords(itsCords, isPlayer);
-    bool isPossible =  std::find(moveCords.begin(), moveCords.end(), finalCords) != moveCords.end();
-    return isPossible;
+    std::vector<IntPair> move_cords = getPossibleMoveCords(start_cords, is_player);
+    bool possible =  std::find(move_cords.begin(), move_cords.end(), final_cords) != move_cords.end();
+    if (!possible)
+        return possible;
+    
+    if (is_player) {
+        player_.getStack(start_cords).setCords(final_cords);
+    } else
+        enemy_.getStack(start_cords).setCords(final_cords);
+    return possible;
 }
 
-std::pair<bool, IntPair> Battle::getPossibleAttackCords(IntPair itsCords, IntPair opponentCords, bool isPlayer)
+bool Battle::checkMovePossibility(IntPair its_cords, IntPair final_cords, bool is_player)
+{
+    std::vector<IntPair> move_cords = getPossibleMoveCords(its_cords, is_player);
+    bool possible =  std::find(move_cords.begin(), move_cords.end(), final_cords) != move_cords.end();
+    return possible;
+}
+
+std::pair<bool, IntPair> Battle::getPossibleAttackCords(IntPair its_cords, IntPair opponent_cords, bool is_player)
 {   
-    std::vector<IntPair> possibleMovsDiffs;
-    if (opponentCords.second % 2 == 0) {
-        possibleMovsDiffs = {{-1, 0}, {0, 1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}};
+    std::vector<IntPair> possible_movs_diffs;
+    if (opponent_cords.second % 2 == 0) {
+        possible_movs_diffs = {{-1, 0}, {0, 1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}};
     } else {
-        possibleMovsDiffs = {{-1, 0}, {-1, -1}, {0, -1}, {1, 0}, {0, 1}, {-1, 1}};
+        possible_movs_diffs = {{-1, 0}, {-1, -1}, {0, -1}, {1, 0}, {0, 1}, {-1, 1}};
     } 
-    for (IntPair moveDiff: possibleMovsDiffs)
+    for (IntPair move_diff: possible_movs_diffs)
     {
-        if (checkMovePossibility(itsCords,
-                     {opponentCords.first + moveDiff.first,
-                      opponentCords.second + moveDiff.second}, 
-                      isPlayer))
+        if (checkMovePossibility(its_cords,
+                     {opponent_cords.first + move_diff.first,
+                      opponent_cords.second + move_diff.second}, 
+                      is_player))
             {
-                IntPair retCords = {opponentCords.first + moveDiff.first,
-                                   opponentCords.second + moveDiff.second}; 
-                return {true, retCords};
+                IntPair ret_cords = {opponent_cords.first + move_diff.first,
+                                   opponent_cords.second + move_diff.second}; 
+                return {true, ret_cords};
             }
     }
     return {false, {}};
 }
 
-bool Battle::checkBasicAttackPoss(IntPair itsCords, IntPair opponentCords, bool isPlayer)
+bool Battle::checkBasicAttackPoss(IntPair its_cords, IntPair opponent_cords, bool is_player)
 {
-    std::vector<IntPair> cordsOfAttacking = GetAllUserOccupiedCords(isPlayer ? player_ : enemy_);
-    if (!(std::find(cordsOfAttacking.begin(),
-                    cordsOfAttacking.end(),
-                    itsCords) != cordsOfAttacking.end()))
+    std::vector<IntPair> attacking_cords = GetAllUserOccupiedCords(is_player ? player_ : enemy_);
+    if (!(std::find(attacking_cords.begin(),
+                    attacking_cords.end(),
+                    its_cords) != attacking_cords.end()))
         return false;
     
-    std::vector<IntPair> cordsOfAttacked = GetAllUserOccupiedCords(isPlayer ? enemy_ : player_);
-    if (!(std::find(cordsOfAttacked.begin(),
-                    cordsOfAttacked.end(),
-                    opponentCords) != cordsOfAttacked.end()))
+    std::vector<IntPair> attacked_cords = GetAllUserOccupiedCords(is_player ? enemy_ : player_);
+    if (!(std::find(attacked_cords.begin(),
+                    attacked_cords.end(),
+                    opponent_cords) != attacked_cords.end()))
         return false;
     return true;
 }
 
 
-std::vector<bool> Battle::performAttack(IntPair itsCords, IntPair opponentCords,
-                                            bool isPlayer)
+std::vector<bool> Battle::performAttack(IntPair its_cords, IntPair opponent_cords,
+                                            bool is_player)
 {
-    if (!checkBasicAttackPoss(itsCords, opponentCords, isPlayer))
+    if (!checkBasicAttackPoss(its_cords, opponent_cords, is_player))
         return {false, false, false};
-    Hero tempHero = isPlayer ? player_ : enemy_;
-    int attackingType = tempHero.getStack(itsCords).getType();
-    bool attackedDead;
-    bool attackingDead = false;
-    if (attackingType == 0)
+    Hero temp_hero = is_player ? player_ : enemy_;
+    int attacking_type = temp_hero.getStack(its_cords).getType();
+    std::pair<bool, IntPair> possible_move_response;
+    if (attacking_type == 0)
     {
-        std::pair<bool, IntPair> possibleMoveResponse = getPossibleAttackCords(itsCords,
-                                                                        opponentCords,
-                                                                        isPlayer);
-        bool moveHappened = moveStack(itsCords, possibleMoveResponse.second, isPlayer);
-        if (!possibleMoveResponse.first || !moveHappened)
+        possible_move_response = getPossibleAttackCords(its_cords, opponent_cords, is_player);
+        bool move_happened = moveStack(its_cords, possible_move_response.second, is_player);
+        if (!possible_move_response.first || !move_happened)
             return {false, false, false};
-
-        if (isPlayer)
-            attackedDead = player_.getStack(possibleMoveResponse.second).attack(enemy_.getStack(opponentCords));
-        else
-            attackedDead = enemy_.getStack(possibleMoveResponse.second).attack(player_.getStack(opponentCords));
-
-        if (!attackedDead)
-        {
-            if (isPlayer)
-                attackingDead = enemy_.getStack(opponentCords).attack(player_.getStack(possibleMoveResponse.second));
-            else
-                attackingDead = player_.getStack(opponentCords).attack(enemy_.getStack(possibleMoveResponse.second));
-        }
-        return {true, attackedDead, attackingDead};
     }
-    if (isPlayer)
-        return {true, player_.getStack(itsCords).attack(enemy_.getStack(opponentCords)), false};
-    else
-        return {true, enemy_.getStack(itsCords).attack(player_.getStack(opponentCords)), false};
+    return contrattack(is_player, possible_move_response, its_cords, opponent_cords, attacking_type);
+    
+}
+
+std::vector<bool> Battle::contrattack(bool is_player, std::pair<bool, IntPair> possible_moves,
+                                      IntPair its_cords, IntPair opponent_cords, int attacking_type)
+{
+    bool attacked_dead;
+    bool attacking_dead = false;
+    Hero& attacker = is_player ? player_ : enemy_;
+    Hero& defender = is_player ? enemy_ : player_;
+    IntPair attacker_cords = possible_moves.second;
+    auto attack = [&](Hero& attacker, IntPair attacker_cords, Hero& defender, IntPair defender_cords) {
+        return attacker.getStack(attacker_cords).attack(defender.getStack(defender_cords));
+    };
+    if (attacking_type == 0)
+    {
+        attacked_dead = attack(attacker, attacker_cords, defender, opponent_cords);
+        if (!attacked_dead)
+        {
+            attacking_dead = attack(defender, opponent_cords, attacker, attacker_cords);
+        }
+        return {true, attacked_dead, attacking_dead};
+    }
+
+    return {true, attack(attacker, its_cords, defender, opponent_cords), false};
 }

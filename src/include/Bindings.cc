@@ -67,8 +67,8 @@ PYBIND11_MODULE(bindings, m)
         .def("set_is_player", &Hero::setIsPlayer)
         .def("set_forces", &Hero::setForces)
 
-        .def("get_stack", &Hero::GetStack)
-        .def("add_stack", &Hero::AddStack);
+        .def("get_stack", &Hero::getStack)
+        .def("add_stack", &Hero::addStack);
 
     py::class_<Battle>(m, "Battle")
         .def(py::init<Hero, Hero>())

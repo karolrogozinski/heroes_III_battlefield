@@ -6,32 +6,28 @@
 
 class Hero
 {
-    std::string mName;
-    bool mIsPlayer;
-    std::vector<Stack> mForces;
-    int mForcesNum = 7;
-    // int mLevel;
-    // int mExp;
-    // int mLvlExpLimit;
-    // std::pair<int, int> mCords;
+    std::string name_;
+    bool isPlayer_;
+    std::vector<Stack> forces_;
+    int forcesNum_ = 7;
 
     public:
-        Hero() : mName(""), mIsPlayer(false){}
+        Hero() : name_(""), isPlayer_(false){}
 
-        Hero(std::string name, bool isPlayer) : mName(name), mIsPlayer(isPlayer) {}
+        Hero(std::string name, bool isPlayer) : name_(name), isPlayer_(isPlayer) {}
 
         Hero(std::string name, bool isPlayer, std::vector<Stack> forces) :
-             mName(name), mIsPlayer(isPlayer), mForces(forces) {}
+             name_(name), isPlayer_(isPlayer), forces_(forces) {}
 
-        std::string getName() {return mName;}
-        bool getIsPlayer() {return mIsPlayer;}
-        std::vector<Stack> getForces() {return mForces;}
+        std::string getName() {return name_;}
+        bool getIsPlayer() {return isPlayer_;}
+        std::vector<Stack> getForces() {return forces_;}
 
-        void setName(std::string sGname) {mName = sGname;}
-        void setIsPlayer(bool isPlayer) {mIsPlayer = isPlayer;}
-        void setForces(std::vector<Stack> forces) {mForces = forces;}
+        void setName(std::string sGname) {name_ = sGname;}
+        void setIsPlayer(bool isPlayer) {isPlayer_ = isPlayer;}
+        void setForces(std::vector<Stack> forces) {forces_ = forces;}
 
-        Stack& GetStack(std::pair<int, int> cords);
-        void AddStack(Stack stack);
+        Stack& getStack(std::pair<int, int> cords);
+        void addStack(Stack stack);
 
 };

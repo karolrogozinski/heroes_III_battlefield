@@ -76,7 +76,7 @@ std::vector<cordsT> Battle::GetPossibleMoveCords(
     bool isPlayer)
 {   
     Stack stack;
-    stack = isPlayer ? mPlayer.GetStack(cords) : mEnemy.GetStack(cords);
+    stack = isPlayer ? mPlayer.getStack(cords) : mEnemy.getStack(cords);
     std::vector<std::vector<cordsT>> tempCords = CalcPossibleMovePoints(stack.getSpeed(), cords);
     std::vector<cordsT> currCords;
     for (auto rows: tempCords)
@@ -134,9 +134,9 @@ bool Battle::MoveStack(cordsT startCords,
         return isPossible;
     
     if (isPlayer) {
-        mPlayer.GetStack(startCords).setCords(finalCords);
+        mPlayer.getStack(startCords).setCords(finalCords);
     } else
-        mEnemy.GetStack(startCords).setCords(finalCords);
+        mEnemy.getStack(startCords).setCords(finalCords);
     return isPossible;
 }
 
@@ -193,7 +193,7 @@ std::vector<bool> Battle::PerformAttack(cordsT itsCords, cordsT opponentCords,
     if (!CheckBasicAttackPoss(itsCords, opponentCords, isPlayer))
         return {false, false, false};
     Hero tempHero = isPlayer ? mPlayer : mEnemy;
-    int attackingType = tempHero.GetStack(itsCords).getType();
+    int attackingType = tempHero.getStack(itsCords).getType();
     bool attackedDead;
     bool attackingDead = false;
     if (attackingType == 0)
@@ -206,21 +206,21 @@ std::vector<bool> Battle::PerformAttack(cordsT itsCords, cordsT opponentCords,
             return {false, false, false};
 
         if (isPlayer)
-            attackedDead = mPlayer.GetStack(possibleMoveResponse.second).attack(mEnemy.GetStack(opponentCords));
+            attackedDead = mPlayer.getStack(possibleMoveResponse.second).attack(mEnemy.getStack(opponentCords));
         else
-            attackedDead = mEnemy.GetStack(possibleMoveResponse.second).attack(mPlayer.GetStack(opponentCords));
+            attackedDead = mEnemy.getStack(possibleMoveResponse.second).attack(mPlayer.getStack(opponentCords));
 
         if (!attackedDead)
         {
             if (isPlayer)
-                attackingDead = mEnemy.GetStack(opponentCords).attack(mPlayer.GetStack(possibleMoveResponse.second));
+                attackingDead = mEnemy.getStack(opponentCords).attack(mPlayer.getStack(possibleMoveResponse.second));
             else
-                attackingDead = mPlayer.GetStack(opponentCords).attack(mEnemy.GetStack(possibleMoveResponse.second));
+                attackingDead = mPlayer.getStack(opponentCords).attack(mEnemy.getStack(possibleMoveResponse.second));
         }
         return {true, attackedDead, attackingDead};
     }
     if (isPlayer)
-        return {true, mPlayer.GetStack(itsCords).attack(mEnemy.GetStack(opponentCords)), false};
+        return {true, mPlayer.getStack(itsCords).attack(mEnemy.getStack(opponentCords)), false};
     else
-        return {true, mEnemy.GetStack(itsCords).attack(mPlayer.GetStack(opponentCords)), false};
+        return {true, mEnemy.getStack(itsCords).attack(mPlayer.getStack(opponentCords)), false};
 }

@@ -1,17 +1,17 @@
 #include "../headers/Hero.h"
 
-Stack& Hero::GetStack(std::pair<int, int> cords)
+Stack& Hero::getStack(std::pair<int, int> cords)
 {
-    for (Stack& stack: mForces)
+    for (Stack& stack: forces_)
     {
         if (stack.getCords() == cords){
             return stack;
         }
     }
-    return mForces[0];
+    return forces_[0];
 }
 
-void Hero::AddStack(Stack newStack)
+void Hero::addStack(Stack newStack)
 {
-    mForces.push_back(newStack);
+    forces_.push_back(newStack);
 }

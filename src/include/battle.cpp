@@ -1,28 +1,4 @@
 #include "../headers/battle.h"
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-#include <pybind11/complex.h>
-#include <pybind11/functional.h>
-#include <pybind11/chrono.h>
-namespace py = pybind11;
-PYBIND11_MODULE(battle, m)
-{
-    py::class_<Battle>(m, "Battle")
-        .def(py::init<Hero, Hero>())
-        .def("set_player", &Battle::setPlayer)
-        .def("set_enemy", &Battle::setEnemy)
-        .def("get_player", &Battle::getPlayer)
-        .def("get_enemy", &Battle::getEnemy)
-        .def("get_size", &Battle::getSize)
-        .def("generate_def_units_cords", &Battle::GenerateDefUnitsCords)
-        .def("move_stack", &Battle::MoveStack)
-        .def("check_basic_attack_poss", &Battle::CheckBasicAttackPoss)
-        .def("perform_attack", &Battle::PerformAttack)
-        .def("get_all_cccupied_cords", &Battle::GetAllOccupiedCords)
-        .def("get_possible_move_cords", &Battle::GetPossibleMoveCords)
-        .def("get_possible_attack_cords", &Battle::GetPossibleAttackCords);
-}
-
 
 void Battle::GenerateDefUnitsCords(Hero hero, bool leftSide)
 {

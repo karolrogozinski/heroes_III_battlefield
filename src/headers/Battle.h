@@ -12,7 +12,7 @@ class Battle {
   const int size_ = 11;
 
 public:
-  Battle(Hero player, Hero enemy);
+  Battle(Hero player, Hero enemy) : player_(player), enemy_(enemy) {}
 
   Hero getPlayer() { return player_; }
   Hero getEnemy() { return enemy_; }
@@ -20,8 +20,6 @@ public:
 
   void setPlayer(Hero player) { player_ = player; }
   void setEnemy(Hero enemy) { enemy_ = enemy; }
-
-  void generateDefUnitsCords(Hero hero, bool left_side);
 
   bool moveStack(IntPair start_cords, IntPair final_cords, bool is_player);
   bool checkBasicAttackPoss(IntPair its_cords, IntPair opponent_cords,

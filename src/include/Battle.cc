@@ -1,20 +1,5 @@
 #include "../headers/Battle.h"
 
-void Battle::generateDefUnitsCords(Hero hero, bool left_side) {
-  int x = left_side ? 0 : size_;
-  auto cords = std::make_pair(x, 0);
-  for (Stack stack : hero.getForces()) {
-    stack.setCords(cords);
-    ++cords.second;
-  }
-  return;
-}
-
-Battle::Battle(Hero player, Hero enemy) : player_(player), enemy_(enemy) {
-  generateDefUnitsCords(player_, true);
-  generateDefUnitsCords(enemy_, false);
-}
-
 std::vector<IntPair> CalcLineCords(int lstep, int rstep, IntPair point,
                                    int ystep) {
   // Calc cords in line, only to use in calcing possible moves
@@ -94,7 +79,7 @@ std::vector<IntPair> getAllUserOccupiedCords(Hero user) {
 std::vector<IntPair> Battle::getAllOccupiedCords() {
   std::vector<IntPair> occupied_player_cords = getAllUserOccupiedCords(player_);
   std::vector<IntPair> occupied_enemy_cords = getAllUserOccupiedCords(enemy_);
-
+  
   occupied_player_cords.reserve(occupied_player_cords.size() +
                                 occupied_enemy_cords.size());
   occupied_player_cords.insert(occupied_player_cords.end(),
@@ -153,18 +138,17 @@ std::pair<bool, IntPair> Battle::getPossibleAttackCords(IntPair its_cords,
 bool Battle::checkBasicAttackPoss(IntPair its_cords, IntPair opponent_cords,
                                   bool is_player) {
   // Check if attak of stack(its_cords) is able on second stack(opponent_cords)
+  std::cout<<"dupa1"<<std::endl;
   std::vector<IntPair> attacking_cords =
       getAllUserOccupiedCords(is_player ? player_ : enemy_);
-  if (!(std::find(attacking_cords.begin(), attacking_cords.end(), its_cords) !=
-        attacking_cords.end()))
+  if (std::find(attacking_cords.begin(), attacking_cords.end(), its_cords) ==
+        attacking_cords.end())
     return false;
-
+  std::cout<<"dupa2"<<std::endl;
   std::vector<IntPair> attacked_cords =
       getAllUserOccupiedCords(is_player ? enemy_ : player_);
-  if (!(std::find(attacked_cords.begin(), attacked_cords.end(),
-                  opponent_cords) != attacked_cords.end()))
-    return false;
-  return true;
+  return std::find(attacked_cords.begin(), attacked_cords.end(),
+                   opponent_cords) != attacked_cords.end();
 }
 
 std::vector<bool> Battle::performAttack(IntPair its_cords,

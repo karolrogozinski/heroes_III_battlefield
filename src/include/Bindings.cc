@@ -81,11 +81,10 @@ PYBIND11_MODULE(bindings, m) {
       .def("get_size", &Battle::getSize)
       .def("set_player", &Battle::setPlayer)
       .def("set_enemy", &Battle::setEnemy)
-      .def("generate_def_units_cords", &Battle::generateDefUnitsCords)
       .def("move_stack", &Battle::moveStack)
       .def("check_basic_attack_poss", &Battle::checkBasicAttackPoss)
       .def("perform_attack", &Battle::performAttack)
-      .def("get_all_cccupied_cords", &Battle::getAllOccupiedCords)
+      .def("get_all_occupied_cords", &Battle::getAllOccupiedCords)
       .def("get_possible_move_cords", &Battle::getPossibleMoveCords)
       .def("get_possible_attack_cords", &Battle::getPossibleAttackCords);
 

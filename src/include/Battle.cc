@@ -138,13 +138,11 @@ std::pair<bool, IntPair> Battle::getPossibleAttackCords(IntPair its_cords,
 bool Battle::checkBasicAttackPoss(IntPair its_cords, IntPair opponent_cords,
                                   bool is_player) {
   // Check if attak of stack(its_cords) is able on second stack(opponent_cords)
-  std::cout<<"dupa1"<<std::endl;
   std::vector<IntPair> attacking_cords =
       getAllUserOccupiedCords(is_player ? player_ : enemy_);
   if (std::find(attacking_cords.begin(), attacking_cords.end(), its_cords) ==
         attacking_cords.end())
     return false;
-  std::cout<<"dupa2"<<std::endl;
   std::vector<IntPair> attacked_cords =
       getAllUserOccupiedCords(is_player ? enemy_ : player_);
   return std::find(attacked_cords.begin(), attacked_cords.end(),

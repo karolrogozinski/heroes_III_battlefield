@@ -1,10 +1,11 @@
 import os
-from time import sleep
+from copy import deepcopy
 
 import pygame
 
 from .hexfield import HexFieldInterface
 from .unit import UnitInterface
+from .minmax import MinMaxBoard, minimax_a_b
 
 from ..bindings import Battle
 
@@ -222,7 +223,7 @@ class BattefieldInterface:
         player_forces = list()
         enemy_forces = list()
 
-        for idx, (stack, enemy) in enumerate(
+        for _, (stack, enemy) in enumerate(
                 zip(self.battle.get_player().get_forces(),
                     self.battle.get_enemy().get_forces())):
             if unit.get_id() == stack.get_id():
@@ -254,7 +255,10 @@ class BattefieldInterface:
         if self.transparency == 175 or self.transparency == 50:
             self.transparency_step = -self.transparency_step
 
-    def get_possible_enemy_attacks(self, possible_moves: list[tuple[int]]) -> list[tuple[int]]:
+    def get_possible_enemy_attacks(
+            self,
+            possible_moves: list[tuple[int]]
+    ) -> list[tuple[int]]:
         possible_attacks = list()
         for hf in self.battlefield:
             if hf.get_unit():
@@ -268,8 +272,25 @@ class BattefieldInterface:
                     possible_attacks.append(hf.get_cords())
         return possible_attacks
 
-    def move_enemy(self, possible_moves: list[tuple[int]]) -> None:
-        possible_attack_cords = self.get_possible_enemy_attacks(possible_moves)
+    @staticmethod
+    def cords_intersection(cords_1: list[tuple[int]],
+                           cords_2: list[tuple[int]]) -> list[tuple[int]]:
+        result = [value for value in cords_1 if value in cords_2]
+        return result
+
+    def move_enemy(self, possible_moves: list[tuple[int]],
+                   all_moves: list[tuple[int]], shooter: bool) -> None:
+        possible_attack_cords = None
+        if self.find_by_cords(possible_moves[0]).get_unit():
+            possible_attack_cords = self.get_possible_enemy_attacks(
+                    possible_moves
+                )
+            if shooter:
+                possible_attack_cords = BattefieldInterface.cords_intersection(
+                    possible_attack_cords,
+                    possible_moves
+                )
+
         if possible_attack_cords:
             a_cords = self.battle.get_possible_attack_cords(
                 self.get_active().get_cords(), possible_attack_cords[0], False)
@@ -313,8 +334,8 @@ class BattefieldInterface:
     @staticmethod
     def are_neighbours(hex_1: HexFieldInterface,
                        hex_2: HexFieldInterface) -> bool:
-        even_diffs = ((-1, 0), (0, 1), (1, -1), (1, 0), (1, 1), (0, 1))
-        odd_diffs = ((-1, 0), (-1, -1), (0, -1), (1, 0), (0, 1), (-1, 1))
+        even_diffs = ((-1, 0), (0, 1), (1, -1), (1, 0), (1, 1), (0, 1), (0, 0))
+        odd_diffs = ((-1, 0), (-1, -1), (0, -1), (1, 0), (0, 1), (-1, 1), (0, 0))
         diffs = even_diffs if not hex_2.get_cords()[1] % 2 else odd_diffs
         for diff in diffs:
             move_X, move_Y = diff
@@ -480,7 +501,14 @@ class BattefieldInterface:
             self.set_available_moves(possible_moves)
 
             if self.get_active().get_unit().is_enemy():
-                self.move_enemy(possible_moves)
+                move = minimax_a_b(
+                    MinMaxBoard(deepcopy(self.battle),
+                                self.battle.get_enemy().get_stack(
+                                    self.get_active().get_cords())),
+                    2,
+                    False
+                )
+                self.move_enemy([move], possible_moves, shooter)
                 moved = 1
 
             self.change_color((0, 150, 0, 175), self.get_active())
@@ -490,7 +518,7 @@ class BattefieldInterface:
                     if polygon.get_unit():
                         if polygon.get_unit().is_enemy():
                             if self.isin_neighbourhood(polygon, possible_moves)\
-                            and not shooter:
+                               and not shooter:
                                 a_cords = self.battle.get_possible_attack_cords(
                                     self.get_active().get_cords(),
                                     polygon.get_cords(),

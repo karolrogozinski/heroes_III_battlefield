@@ -6,7 +6,7 @@ import pygame
 from .hexfield import HexFieldInterface
 from .unit import UnitInterface
 
-from ..battle import Battle
+from ..bindings import Battle
 
 
 class BattefieldInterface:
@@ -446,12 +446,16 @@ class BattefieldInterface:
         self.set_available_moves(possible_moves)
 
         while self.RUN_BF:
-            clock.tick(30)
+            clock.tick(120)
             self.changed_active = 0
             moved = 0
             mouse_clicked = False
             if not self.get_active().get_unit().is_enemy():
                 shooter = self.battle.get_player().get_stack(
+                    self.get_active().get_cords()
+                    ).get_type()
+            else:
+                shooter = self.battle.get_enemy().get_stack(
                     self.get_active().get_cords()
                     ).get_type()
 
@@ -481,25 +485,26 @@ class BattefieldInterface:
 
             self.change_color((0, 150, 0, 175), self.get_active())
 
-            if polygon and not mouse_clicked:
-                if polygon.get_unit():
-                    if polygon.get_unit().is_enemy():
-                        if self.isin_neighbourhood(polygon, possible_moves)\
-                           and not shooter:
-                            a_cords = self.battle.get_possible_attack_cords(
-                                self.get_active().get_cords(),
-                                polygon.get_cords(),
-                                True
-                            )
-                            self.set_attack_moves(
-                                a_cords[1],
-                                self.battle.get_player().get_stack(
-                                    self.get_active().get_cords()).get_type()
-                            )
+            if not self.get_active().get_unit().is_enemy():
+                if polygon and not mouse_clicked:
+                    if polygon.get_unit():
+                        if polygon.get_unit().is_enemy():
+                            if self.isin_neighbourhood(polygon, possible_moves)\
+                            and not shooter:
+                                a_cords = self.battle.get_possible_attack_cords(
+                                    self.get_active().get_cords(),
+                                    polygon.get_cords(),
+                                    True
+                                )
+                                self.set_attack_moves(
+                                    a_cords[1],
+                                    self.battle.get_player().get_stack(
+                                        self.get_active().get_cords()).get_type()
+                                )
 
-                        if shooter:
-                            self.set_attack_moves((), shooter)
-                        self.change_color((150, 0, 0, 50), polygon)
+                            if shooter:
+                                self.set_attack_moves((), shooter)
+                            self.change_color((150, 0, 0, 50), polygon)
 
             if polygon and mouse_clicked:
                 if polygon.cords in possible_moves:

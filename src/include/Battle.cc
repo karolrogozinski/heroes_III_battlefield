@@ -116,6 +116,13 @@ bool Battle::checkMovePossibility(IntPair its_cords, IntPair final_cords,
 std::pair<bool, IntPair> Battle::getPossibleAttackCords(IntPair its_cords,
                                                         IntPair opponent_cords,
                                                         bool is_player) {
+  if (is_player){
+    if (player_.getStack(its_cords).getType())
+      return {true, opponent_cords};
+  } else {
+    if (enemy_.getStack(its_cords).getType())
+      return {true, opponent_cords};
+  }
   std::vector<IntPair> possible_movs_diffs;
   if (opponent_cords.second % 2 == 0) {
     possible_movs_diffs = {{-1, 0}, {0, 1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}};
@@ -132,7 +139,7 @@ std::pair<bool, IntPair> Battle::getPossibleAttackCords(IntPair its_cords,
       return {true, ret_cords};
     }
   }
-  return {false, {}};
+  return {false, opponent_cords};
 }
 
 bool Battle::checkBasicAttackPoss(IntPair its_cords, IntPair opponent_cords,
@@ -154,7 +161,7 @@ std::vector<bool> Battle::performAttack(IntPair its_cords,
                                         bool is_player) {
   if (!checkBasicAttackPoss(its_cords, opponent_cords, is_player))
     return {false, false, false};
-  Hero temp_hero = is_player ? player_ : enemy_;
+  Hero& temp_hero = is_player ? player_ : enemy_;
   int attacking_type = temp_hero.getStack(its_cords).getType();
   std::pair<bool, IntPair> possible_move_response;
   if (attacking_type == 0) {

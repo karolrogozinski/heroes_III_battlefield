@@ -11,7 +11,7 @@ from ..bindings import Battle
 
 
 class BattefieldInterface:
-    def __init__(self, battle: Battle) -> None:
+    def __init__(self, battle: Battle, difficulty: int) -> None:
         pygame.init()
         self.window_size = (1280, 720)
         self.dirname = os.path.dirname(os.path.abspath(__file__))
@@ -29,6 +29,7 @@ class BattefieldInterface:
         self.start_cords = [(0, 0), (10, 0), (0, 2), (10, 2), (0, 4), (10, 4),
                             (0, 5), (10, 5), (0, 6), (10, 6), (0, 8), (10, 8),
                             (0, 10), (10, 10)]
+        self.difficulty = difficulty
 
     def create_battlefield(self, color: tuple[int], size: int) -> None:
         self.battlefield = []
@@ -280,7 +281,7 @@ class BattefieldInterface:
 
     def move_enemy(self, possible_moves: list[tuple[int]],
                    all_moves: list[tuple[int]], shooter: bool) -> None:
-        possible_attack_cords = None
+        possible_attack_cords = list()
         if self.find_by_cords(possible_moves[0]).get_unit():
             possible_attack_cords = self.get_possible_enemy_attacks(
                     possible_moves
@@ -301,33 +302,34 @@ class BattefieldInterface:
                         self.get_active().get_cords()).get_type()
                 )
 
-            attack = self.battle.perform_attack(
-                self.get_active().get_cords(),
-                possible_attack_cords[0],
-                False
-            )
+            if a_cords[0]:
+                attack = self.battle.perform_attack(
+                    self.get_active().get_cords(),
+                    possible_attack_cords[0],
+                    False
+                )
+                if attack[0]:
+                    self.update_stacks(new_cords, possible_attack_cords[0], False)
 
-            if attack[0]:
-                self.update_stacks(new_cords, possible_attack_cords[0], False)
+                if attack[1]:
+                    if self.find_by_cords(possible_attack_cords[0]).is_active():
+                        self.next_unit()
+                        self.changed_active = 1
+                    corpse = self.find_by_cords(
+                        possible_attack_cords[0]).take_unit()
+                    corpse.alive = False
+                    self.find_by_cords(
+                        possible_attack_cords[0]).corpse = corpse
 
-            if attack[1]:
-                if self.find_by_cords(
-                   possible_attack_cords[0]).is_active():
-                    self.next_unit()
-                    self.changed_active = 1
-                corpse = self.find_by_cords(
-                    possible_attack_cords[0]).take_unit()
-                corpse.alive = False
-                self.find_by_cords(
-                    possible_attack_cords[0]).corpse = corpse
-
-            if attack[2]:
-                if self.find_by_cords(a_cords[1]).is_active():
-                    self.next_unit()
-                    self.changed_active = 1
-                corpse = self.find_by_cords(a_cords[1]).take_unit()
-                corpse.alive = False
-                self.find_by_cords(a_cords[1]).corpse = corpse
+                if attack[2]:
+                    if self.find_by_cords(a_cords[1]).is_active():
+                        self.next_unit()
+                        self.changed_active = 1
+                    corpse = self.find_by_cords(a_cords[1]).take_unit()
+                    corpse.alive = False
+                    self.find_by_cords(a_cords[1]).corpse = corpse
+            else:
+                self.move_unit(all_moves[0])
         else:
             self.move_unit(possible_moves[0])
 
@@ -505,7 +507,7 @@ class BattefieldInterface:
                     MinMaxBoard(deepcopy(self.battle),
                                 self.battle.get_enemy().get_stack(
                                     self.get_active().get_cords())),
-                    2,
+                    self.difficulty,
                     False
                 )
                 self.move_enemy([move], possible_moves, shooter)

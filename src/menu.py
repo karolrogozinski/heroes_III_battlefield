@@ -9,9 +9,6 @@ from pygame_menu.locals import ALIGN_CENTER
 from .interface.battlefield import BattefieldInterface
 
 from .bindings import Controller, Battle, Hero, Stack
-# from .battle import Battle
-# from .hero import Hero
-# from .stack import Stack
 
 
 class MainMenu():
@@ -65,7 +62,8 @@ class MainMenu():
             rows=6
         )
 
-        volumes = [(str(10*i), 10*i) for i in range(11)]
+        volumes = [(str(10*i), 10*i) for i in range(1, 11)]
+        difficulties = [('Easy', 1), ('Mid', 2), ('Hard', 3)]
         self.background_image = pygame_menu.BaseImage(
             image_path=os.path.join(self.dirname, 'images/menu_background.jpg')
         )
@@ -91,9 +89,13 @@ class MainMenu():
                 default=1,
                 onchange=fcts[i-1]
             )
-            self.play_menu.add.label('')
-
             if i == 4:
+                self.play_menu.add.selector(
+                    '',
+                    difficulties,
+                    default=0,
+                    onchange=self.change_difficulty
+                )
                 self.play_menu.add.button(
                     'Play',
                     self.play_game,
@@ -103,6 +105,10 @@ class MainMenu():
             else:
                 self.play_menu.add.label('')
                 self.play_menu.add.label('')
+                self.play_menu.add.label('')
+
+    def change_difficulty(self, _, level) -> None:
+        self.difficulty = level
 
     def set_1(self, _, amount: int) -> None:
         self.p1 = amount
@@ -210,18 +216,18 @@ class MainMenu():
                 if idx+1 in (2, 5):
                     shooter = 1
                 temp_stack = Stack(idx+1, shooter, 2*idx+10, size,
-                                   idx+1, 2*idx+1, 2*idx+1)
+                                   idx+4, 2*idx+1, 2*idx+1)
                 temp_stack.set_damage((idx+1, (idx+1)*2))
                 shooter = 0
                 if idx+1 == 2:
                     shooter = 1
                 temp_stack_enemy = Stack(idx+8, shooter, 2*idx+10,
-                                         size*self.difficulty,
-                                         idx+1, 2*idx+1, 2*idx+1)
+                                         size + int(size*(self.difficulty-1)/5),
+                                         idx+4, 2*idx+1, 2*idx+1)
                 temp_stack_enemy.set_damage((idx+1, (idx+1)*2))
                 player.add_stack(temp_stack)
                 enemy.add_stack(temp_stack_enemy)
 
             battle_ = Battle(player, enemy)
-            self.b_field = BattefieldInterface(battle_)
+            self.b_field = BattefieldInterface(battle_, self.difficulty)
             self.b_field.run()

@@ -7,12 +7,16 @@
 #include "../headers/Battle.h"
 #include "../headers/Controller.h"
 namespace py = pybind11;
+using namespace pybind11::literals;
 
 PYBIND11_MODULE(bindings, m) {
   py::class_<Stack>(m, "Stack")
       .def(py::init<>())
       .def(py::init<int>())
       .def(py::init<int, int, int, int, int, int, int>())
+      .def("__deepcopy__", [](const Stack& self, py::dict){
+        return Stack(self);
+      }, "memo"_a)
 
       .def("get_id", &Stack::getID)
       .def("get_type", &Stack::getType)
@@ -62,6 +66,9 @@ PYBIND11_MODULE(bindings, m) {
   py::class_<Hero>(m, "Hero")
       .def(py::init<>())
       .def(py::init<std::string, bool>())
+      .def("__deepcopy__", [](const Hero& self, py::dict){
+        return Hero(self);
+      }, "memo"_a)
 
       .def("get_name", &Hero::getName)
       .def("get_is_player", &Hero::getIsPlayer)
@@ -76,6 +83,10 @@ PYBIND11_MODULE(bindings, m) {
 
   py::class_<Battle>(m, "Battle")
       .def(py::init<Hero, Hero>())
+      .def("__deepcopy__", [](const Battle& self, py::dict){
+        return Battle(self);
+      }, "memo"_a)
+
       .def("get_player", &Battle::getPlayer)
       .def("get_enemy", &Battle::getEnemy)
       .def("get_size", &Battle::getSize)

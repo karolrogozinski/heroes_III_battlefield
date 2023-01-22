@@ -1,4 +1,5 @@
 #include "../headers/Stack.h"
+#include <iostream>
 
 bool Stack::beAttacked(int damage) {
   int dead_units;

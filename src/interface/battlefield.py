@@ -254,7 +254,7 @@ class BattefieldInterface:
         if self.transparency == 175 or self.transparency == 50:
             self.transparency_step = -self.transparency_step
 
-    def get_possible_enemy_attacks(self, possible_moves) -> list[tuple[int]]:
+    def get_possible_enemy_attacks(self, possible_moves: list[tuple[int]]) -> list[tuple[int]]:
         possible_attacks = list()
         for hf in self.battlefield:
             if hf.get_unit():
@@ -268,7 +268,7 @@ class BattefieldInterface:
                     possible_attacks.append(hf.get_cords())
         return possible_attacks
 
-    def move_enemy(self, possible_moves) -> None:
+    def move_enemy(self, possible_moves: list[tuple[int]]) -> None:
         possible_attack_cords = self.get_possible_enemy_attacks(possible_moves)
         if possible_attack_cords:
             a_cords = self.battle.get_possible_attack_cords(
@@ -450,9 +450,10 @@ class BattefieldInterface:
             self.changed_active = 0
             moved = 0
             mouse_clicked = False
-            shooter = self.battle.get_player().get_stack(
-                self.get_active().get_cords()
-                ).get_type()
+            if not self.get_active().get_unit().is_enemy():
+                shooter = self.battle.get_player().get_stack(
+                    self.get_active().get_cords()
+                    ).get_type()
 
             self.update_transparency()
             self.draw_bg()
